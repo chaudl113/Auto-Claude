@@ -157,17 +157,38 @@ def print_conflict_info(result: dict) -> None:
         return
 
     print()
-    print(
-        warning(
-            f"  {len(conflicts)} file{'s' if len(conflicts) != 1 else ''} had conflicts:"
+    # Handle both string list and dict list formats
+    if conflicts and isinstance(conflicts[0], dict):
+        conflict_files = [c.get("file") for c in conflicts if c.get("file")]
+        print(
+            warning(
+                f"  {len(conflict_files)} file{'s' if len(conflict_files) != 1 else ''} had conflicts:"
+            )
         )
-    )
-    for conflict_file in conflicts:
-        print(f"    {highlight(conflict_file)}")
+        for conflict in conflicts:
+            file_path = conflict.get("file")
+            reason = conflict.get("reason")
+            if file_path:
+                if reason:
+                    print(f"    {highlight(file_path)}: {reason}")
+                else:
+                    print(f"    {highlight(file_path)}")
+    else:
+        # Legacy string format
+        print(
+            warning(
+                f"  {len(conflicts)} file{'s' if len(conflicts) != 1 else ''} had conflicts:"
+            )
+        )
+        for conflict_file in conflicts:
+            print(f"    {highlight(conflict_file)}")
+
     print()
     print(muted("  These files have conflict markers (<<<<<<< =======  >>>>>>>)"))
     print(muted("  Review and resolve them, then run:"))
-    print(f"    git add {' '.join(conflicts)}")
+    # Extract file paths for the git add command
+    file_paths = [c.get("file") if isinstance(c, dict) else c for c in conflicts]
+    print(f"    git add {' '.join(file_paths)}")
     print("    git commit")
     print()
 
