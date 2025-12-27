@@ -73,6 +73,8 @@ export function Insights({ projectId }: InsightsProps) {
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
+    console.log('Scrolling to bottom');
+    console.log('Messages end ref:', streamingContent);
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [session?.messages, streamingContent]);
 

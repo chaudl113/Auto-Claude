@@ -182,9 +182,6 @@ def translate_model_for_cliproxy(model: str) -> str:
     mappings = get_cliproxy_model_mappings()
     translated = mappings.get(model, model)
     
-    if translated != model:
-        print(f"   - Model mapping: {model} -> {translated}")
-    
     return translated
 
 
