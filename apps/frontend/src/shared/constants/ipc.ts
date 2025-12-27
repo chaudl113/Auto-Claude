@@ -148,6 +148,12 @@ export const IPC_CHANNELS = {
   ENV_CHECK_CLAUDE_AUTH: 'env:checkClaudeAuth',
   ENV_INVOKE_CLAUDE_SETUP: 'env:invokeClaudeSetup',
 
+  // CLIProxyAPI configuration
+  CLIPROXY_GET_STATUS: 'cliproxy:getStatus',
+  CLIPROXY_TEST_CONNECTION: 'cliproxy:testConnection',
+  CLIPROXY_GET_CONFIG: 'cliproxy:getConfig',
+  CLIPROXY_SAVE_CONFIG: 'cliproxy:saveConfig',
+
   // Ideation operations
   IDEATION_GET: 'ideation:get',
   IDEATION_GENERATE: 'ideation:generate',

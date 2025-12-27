@@ -117,6 +117,7 @@ def _create_linear_client() -> ClaudeSDKClient:
         ensure_claude_code_oauth_token,
         get_sdk_env_vars,
         require_auth_token,
+        translate_model_for_cliproxy,
     )
 
     require_auth_token()  # Raises ValueError if no token found
@@ -127,10 +128,11 @@ def _create_linear_client() -> ClaudeSDKClient:
         raise ValueError("LINEAR_API_KEY not set")
 
     sdk_env = get_sdk_env_vars()
+    translated_model = translate_model_for_cliproxy("claude-haiku-4-5")
 
     return ClaudeSDKClient(
         options=ClaudeAgentOptions(
-            model="claude-haiku-4-5",  # Fast & cheap model for simple API calls
+            model=translated_model,  # Fast & cheap model for simple API calls
             system_prompt="You are a Linear API assistant. Execute the requested Linear operation precisely.",
             allowed_tools=LINEAR_TOOLS,
             mcp_servers={

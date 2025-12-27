@@ -49,6 +49,7 @@ import {
   hasValidToken,
   expandHomePath
 } from './claude-profile/profile-utils';
+import { isCliProxyEnabled, getCliProxyEnv } from './env-utils';
 
 /**
  * Manages Claude Code profiles for multi-account support.
@@ -339,9 +340,18 @@ export class ClaudeProfileManager {
 
   /**
    * Get environment variables for spawning processes with the active profile.
+   * In CLIProxyAPI mode, returns proxy env vars instead of OAuth token.
    * Returns { CLAUDE_CODE_OAUTH_TOKEN: token } if token is available (decrypted).
    */
   getActiveProfileEnv(): Record<string, string> {
+    // CLIProxyAPI mode: use proxy env vars, no OAuth required
+    if (isCliProxyEnabled()) {
+      const proxyEnv = getCliProxyEnv();
+      console.warn('[ClaudeProfileManager] CLIProxyAPI mode enabled, using proxy:', proxyEnv.ANTHROPIC_BASE_URL);
+      return proxyEnv;
+    }
+
+    // Standard OAuth mode
     const profile = this.getActiveProfile();
     const env: Record<string, string> = {};
 

@@ -1408,6 +1408,7 @@ async def _merge_file_with_ai_async(
             # Call Claude Haiku for fast merge
             try:
                 from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
+                from core.auth import translate_model_for_cliproxy, get_sdk_env_vars
             except ImportError:
                 return ParallelMergeResult(
                     file_path=task.file_path,
@@ -1416,13 +1417,18 @@ async def _merge_file_with_ai_async(
                     error="claude_agent_sdk not installed",
                 )
 
+            # Translate model for CLIProxyAPI if enabled
+            translated_model = translate_model_for_cliproxy("claude-haiku-4-5-20251001")
+            sdk_env = get_sdk_env_vars()
+
             client = ClaudeSDKClient(
                 options=ClaudeAgentOptions(
-                    model="claude-haiku-4-5-20251001",
+                    model=translated_model,
                     system_prompt=AI_MERGE_SYSTEM_PROMPT,
                     allowed_tools=[],
                     max_turns=1,
                     max_thinking_tokens=1024,  # Low thinking for speed
+                    env=sdk_env,
                 )
             )
 

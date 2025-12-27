@@ -22,7 +22,7 @@ from auto_claude_tools import (
 )
 from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
 from claude_agent_sdk.types import HookMatcher
-from core.auth import get_sdk_env_vars, require_auth_token
+from core.auth import get_sdk_env_vars, require_auth_token, is_cliproxy_enabled, translate_model_for_cliproxy
 from linear_updater import is_linear_enabled
 from prompts_pkg.project_context import detect_project_capabilities, load_project_index
 from security import bash_security_hook
@@ -168,6 +168,9 @@ def create_client(
     oauth_token = require_auth_token()
     # Ensure SDK can access it via its expected env var
     os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = oauth_token
+
+    # Translate model name for CLIProxyAPI if enabled
+    translated_model = translate_model_for_cliproxy(model)
 
     # Collect env vars to pass to SDK (ANTHROPIC_BASE_URL, etc.)
     sdk_env = get_sdk_env_vars()
@@ -341,7 +344,7 @@ def create_client(
 
     return ClaudeSDKClient(
         options=ClaudeAgentOptions(
-            model=model,
+            model=translated_model,  # Use translated model for CLIProxyAPI
             system_prompt=(
                 f"You are an expert full-stack developer building production-quality software. "
                 f"Your working directory is: {project_dir.resolve()}\n"

@@ -18,7 +18,8 @@ import {
   ChevronRight,
   RefreshCw,
   Activity,
-  AlertCircle
+  AlertCircle,
+  Zap
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -27,6 +28,7 @@ import { Switch } from '../ui/switch';
 import { cn } from '../../lib/utils';
 import { SettingsSection } from './SettingsSection';
 import { loadClaudeProfiles as loadGlobalClaudeProfiles } from '../../stores/claude-profile-store';
+import { ProxyModelMapper } from '../proxy-config/ProxyModelMapper';
 import type { AppSettings, ClaudeProfile, ClaudeAutoSwitchSettings } from '../../../shared/types';
 
 interface IntegrationSettingsProps {
@@ -298,6 +300,25 @@ export function IntegrationSettings({ settings, onSettingsChange, isOpen }: Inte
       description={t('integrations.description')}
     >
       <div className="space-y-6">
+        {/* CLIProxyAPI Configuration Section */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Zap className="h-4 w-4 text-muted-foreground" />
+            <h4 className="text-sm font-semibold text-foreground">CLIProxyAPI / ProxyPal</h4>
+          </div>
+
+          <div className="rounded-lg bg-muted/30 border border-border p-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              Route AI requests through ProxyPal to use Claude, GitHub Copilot, Gemini, and more without a Claude Pro/Max subscription.
+            </p>
+
+            <ProxyModelMapper
+              showEnableToggle={true}
+              compact={true}
+            />
+          </div>
+        </div>
+
         {/* Claude Accounts Section */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">

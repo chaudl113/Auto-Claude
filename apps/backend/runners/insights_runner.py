@@ -31,7 +31,7 @@ except ImportError:
     ClaudeAgentOptions = None
     ClaudeSDKClient = None
 
-from core.auth import ensure_claude_code_oauth_token, get_auth_token
+from core.auth import ensure_claude_code_oauth_token, get_auth_token, translate_model_for_cliproxy, get_sdk_env_vars
 from debug import (
     debug,
     debug_detailed,
@@ -176,11 +176,15 @@ Current question: {message}"""
         thinking_level=thinking_level,
     )
 
+    # Translate model for CLIProxyAPI if enabled
+    translated_model = translate_model_for_cliproxy(model)
+    sdk_env = get_sdk_env_vars()
+
     try:
         # Create Claude SDK client with appropriate settings for insights
         client = ClaudeSDKClient(
             options=ClaudeAgentOptions(
-                model=model,  # Use configured model
+                model=translated_model,  # Use translated model for CLIProxyAPI
                 system_prompt=system_prompt,
                 allowed_tools=[
                     "Read",
@@ -189,6 +193,7 @@ Current question: {message}"""
                 ],
                 max_turns=30,  # Allow sufficient turns for codebase exploration
                 cwd=str(project_path),
+                env=sdk_env,  # Pass CLIProxyAPI env vars
             )
         )
 

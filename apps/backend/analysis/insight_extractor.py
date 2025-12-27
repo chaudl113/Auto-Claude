@@ -30,7 +30,7 @@ except ImportError:
     ClaudeAgentOptions = None
     ClaudeSDKClient = None
 
-from core.auth import ensure_claude_code_oauth_token, get_auth_token
+from core.auth import ensure_claude_code_oauth_token, get_auth_token, translate_model_for_cliproxy, get_sdk_env_vars
 
 # Default model for insight extraction (fast and cheap)
 DEFAULT_EXTRACTION_MODEL = "claude-3-5-haiku-latest"
@@ -368,9 +368,13 @@ async def run_insight_extraction(
     try:
         # Create a minimal SDK client for insight extraction
         # No tools needed - just text generation
+        # Translate model for CLIProxyAPI if enabled
+        translated_model = translate_model_for_cliproxy(model)
+        sdk_env = get_sdk_env_vars()
+
         client = ClaudeSDKClient(
             options=ClaudeAgentOptions(
-                model=model,
+                model=translated_model,
                 system_prompt=(
                     "You are an expert code analyst. You extract structured insights from coding sessions. "
                     "Always respond with valid JSON only, no markdown formatting or explanations."
@@ -378,6 +382,7 @@ async def run_insight_extraction(
                 allowed_tools=[],  # No tools needed for extraction
                 max_turns=1,  # Single turn extraction
                 cwd=cwd,
+                env=sdk_env,
             )
         )
 

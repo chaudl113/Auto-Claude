@@ -170,7 +170,31 @@ const browserMockAPI: ElectronAPI = {
     onAnalyzePreviewProgress: () => () => {},
     onAnalyzePreviewComplete: () => () => {},
     onAnalyzePreviewError: () => () => {}
-  }
+  },
+
+  // CLIProxyAPI (browser mock always returns disabled)
+  getCliProxyStatus: async () => ({
+    success: true,
+    data: { enabled: false, url: 'http://localhost:8317', connected: false }
+  }),
+  testCliProxyConnection: async () => ({
+    success: true,
+    data: { connected: false, models: [] }
+  }),
+  getCliProxyConfig: async () => ({
+    success: true,
+    data: {
+      enabled: false,
+      url: 'http://localhost:8317',
+      apiKey: '',
+      modelMappings: [
+        { source: 'opus' as const, target: '', enabled: true },
+        { source: 'sonnet' as const, target: '', enabled: true },
+        { source: 'haiku' as const, target: '', enabled: true }
+      ]
+    }
+  }),
+  saveCliProxyConfig: async () => ({ success: true })
 };
 
 /**

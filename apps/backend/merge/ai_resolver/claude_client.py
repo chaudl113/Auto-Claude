@@ -31,7 +31,7 @@ def create_claude_resolver() -> AIResolver:
         Configured AIResolver instance
     """
     # Import here to avoid circular dependency
-    from core.auth import ensure_claude_code_oauth_token, get_auth_token
+    from core.auth import ensure_claude_code_oauth_token, get_auth_token, translate_model_for_cliproxy, get_sdk_env_vars
 
     from .resolver import AIResolver
 
@@ -52,13 +52,18 @@ def create_claude_resolver() -> AIResolver:
         """Call Claude using the Agent SDK for merge resolution."""
 
         async def _run_merge() -> str:
+            # Translate model for CLIProxyAPI if enabled
+            translated_model = translate_model_for_cliproxy("sonnet")
+            sdk_env = get_sdk_env_vars()
+
             # Create a minimal client for merge resolution
             client = ClaudeSDKClient(
                 options=ClaudeAgentOptions(
-                    model="sonnet",
+                    model=translated_model,
                     system_prompt=system,
                     allowed_tools=[],  # No tools needed for merge
                     max_turns=1,
+                    env=sdk_env,
                 )
             )
 

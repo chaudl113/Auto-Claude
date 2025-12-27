@@ -1,0 +1,10 @@
+{
+  "amp.mcpServers": {
+    "beads-village": {
+      "command": "npx",
+      "args": [
+        "beads-village"
+      ]
+    }
+  }
+}

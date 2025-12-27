@@ -8,6 +8,8 @@ import { IdeationAPI, createIdeationAPI } from './modules/ideation-api';
 import { InsightsAPI, createInsightsAPI } from './modules/insights-api';
 import { AppUpdateAPI, createAppUpdateAPI } from './app-update-api';
 import { GitHubAPI, createGitHubAPI } from './modules/github-api';
+import { CLIProxyAPI, createCLIProxyAPI } from './modules/cliproxy-api';
+import { ShellAPI, createShellAPI } from './modules/shell-api';
 
 export interface ElectronAPI extends
   ProjectAPI,
@@ -18,7 +20,9 @@ export interface ElectronAPI extends
   AgentAPI,
   IdeationAPI,
   InsightsAPI,
-  AppUpdateAPI {
+  AppUpdateAPI,
+  CLIProxyAPI,
+  ShellAPI {
   github: GitHubAPI;
 }
 
@@ -32,6 +36,8 @@ export const createElectronAPI = (): ElectronAPI => ({
   ...createIdeationAPI(),
   ...createInsightsAPI(),
   ...createAppUpdateAPI(),
+  ...createCLIProxyAPI(),
+  ...createShellAPI(),
   github: createGitHubAPI()
 });
 
@@ -46,7 +52,9 @@ export {
   createIdeationAPI,
   createInsightsAPI,
   createAppUpdateAPI,
-  createGitHubAPI
+  createGitHubAPI,
+  createCLIProxyAPI,
+  createShellAPI
 };
 
 export type {
@@ -59,5 +67,7 @@ export type {
   IdeationAPI,
   InsightsAPI,
   AppUpdateAPI,
-  GitHubAPI
+  GitHubAPI,
+  CLIProxyAPI,
+  ShellAPI
 };

@@ -162,3 +162,37 @@ export interface AutoBuildSourceUpdateProgress {
   /** New version after successful update - used to refresh UI */
   newVersion?: string;
 }
+
+// CLIProxyAPI configuration status
+export interface CLIProxyStatus {
+  enabled: boolean;
+  url: string;
+  connected: boolean;
+  error?: string;
+}
+
+// Model mapping for CLIProxyAPI
+export interface ModelMapping {
+  /** Source model type (opus, sonnet, haiku) */
+  source: 'opus' | 'sonnet' | 'haiku';
+  /** Target model name in CLIProxyAPI (e.g., "gpt-5.1", "claude-sonnet-4.5") */
+  target: string;
+  /** Whether this mapping is enabled */
+  enabled: boolean;
+}
+
+// Full CLIProxyAPI configuration (persisted to ~/.auto-claude/cliproxy-config.json)
+export interface CLIProxyConfig {
+  /** Whether CLIProxyAPI mode is enabled */
+  enabled: boolean;
+  /** CLIProxyAPI server URL */
+  url: string;
+  /** API key for authentication */
+  apiKey: string;
+  /** Model mappings from Auto-Claude models to CLIProxyAPI models */
+  modelMappings: ModelMapping[];
+  /** Last successful connection test timestamp */
+  lastConnected?: string;
+  /** Available models from the proxy (cached) */
+  availableModels?: string[];
+}

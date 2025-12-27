@@ -133,3 +133,52 @@ export function findExecutable(command: string): string | null {
 export function isCommandAvailable(command: string): boolean {
   return findExecutable(command) !== null;
 }
+
+// =============================================================================
+// CLIProxyAPI / ProxyPal Configuration
+// =============================================================================
+// When CLIPROXY_ENABLED=true, Auto Claude routes all API calls through
+// CLIProxyAPI instead of requiring Claude Pro/Max OAuth.
+
+const CLIPROXY_DEFAULT_URL = 'http://localhost:8317';
+const CLIPROXY_DEFAULT_API_KEY = 'proxypal';
+
+/**
+ * Check if CLIProxyAPI mode is enabled
+ */
+export function isCliProxyEnabled(): boolean {
+  const value = process.env.CLIPROXY_ENABLED || '';
+  return ['true', '1', 'yes'].includes(value.toLowerCase());
+}
+
+/**
+ * Get CLIProxyAPI base URL
+ */
+export function getCliProxyUrl(): string {
+  return process.env.CLIPROXY_URL || CLIPROXY_DEFAULT_URL;
+}
+
+/**
+ * Get CLIProxyAPI API key
+ */
+export function getCliProxyApiKey(): string {
+  return process.env.CLIPROXY_API_KEY || CLIPROXY_DEFAULT_API_KEY;
+}
+
+/**
+ * Get environment variables for CLIProxyAPI mode
+ * Returns env vars that configure claude-agent-sdk to use the proxy
+ */
+export function getCliProxyEnv(): Record<string, string> {
+  if (!isCliProxyEnabled()) {
+    return {};
+  }
+
+  return {
+    ANTHROPIC_BASE_URL: getCliProxyUrl(),
+    ANTHROPIC_AUTH_TOKEN: getCliProxyApiKey(),
+    CLAUDE_CODE_OAUTH_TOKEN: getCliProxyApiKey(), // SDK compatibility
+    DISABLE_TELEMETRY: 'true',
+    DISABLE_COST_WARNINGS: 'true',
+  };
+}

@@ -6,6 +6,7 @@ import { AgentEvents } from './agent-events';
 import { AgentProcessManager } from './agent-process';
 import { AgentQueueManager } from './agent-queue';
 import { getClaudeProfileManager } from '../claude-profile-manager';
+import { isCliProxyEnabled } from '../env-utils';
 import {
   SpecCreationMetadata,
   TaskExecutionOptions,
@@ -93,11 +94,13 @@ export class AgentManager extends EventEmitter {
     specDir?: string,
     metadata?: SpecCreationMetadata
   ): void {
-    // Pre-flight auth check: Verify active profile has valid authentication
-    const profileManager = getClaudeProfileManager();
-    if (!profileManager.hasValidAuth()) {
-      this.emit('error', taskId, 'Claude authentication required. Please authenticate in Settings > Claude Profiles before starting tasks.');
-      return;
+    // Pre-flight auth check: Skip in CLIProxyAPI mode, otherwise verify active profile has valid authentication
+    if (!isCliProxyEnabled()) {
+      const profileManager = getClaudeProfileManager();
+      if (!profileManager.hasValidAuth()) {
+        this.emit('error', taskId, 'Claude authentication required. Please authenticate in Settings > Claude Profiles before starting tasks.');
+        return;
+      }
     }
 
     const autoBuildSource = this.processManager.getAutoBuildSourcePath();
@@ -161,11 +164,13 @@ export class AgentManager extends EventEmitter {
     specId: string,
     options: TaskExecutionOptions = {}
   ): void {
-    // Pre-flight auth check: Verify active profile has valid authentication
-    const profileManager = getClaudeProfileManager();
-    if (!profileManager.hasValidAuth()) {
-      this.emit('error', taskId, 'Claude authentication required. Please authenticate in Settings > Claude Profiles before starting tasks.');
-      return;
+    // Pre-flight auth check: Skip in CLIProxyAPI mode, otherwise verify active profile has valid authentication
+    if (!isCliProxyEnabled()) {
+      const profileManager = getClaudeProfileManager();
+      if (!profileManager.hasValidAuth()) {
+        this.emit('error', taskId, 'Claude authentication required. Please authenticate in Settings > Claude Profiles before starting tasks.');
+        return;
+      }
     }
 
     const autoBuildSource = this.processManager.getAutoBuildSourcePath();

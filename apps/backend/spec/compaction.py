@@ -10,7 +10,7 @@ summarized and passed as context to subsequent phases.
 from pathlib import Path
 
 from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
-from core.auth import get_sdk_env_vars, require_auth_token
+from core.auth import get_sdk_env_vars, require_auth_token, translate_model_for_cliproxy
 
 
 async def summarize_phase_output(
@@ -58,9 +58,12 @@ Be concise and use bullet points. Skip boilerplate and meta-commentary.
 ## Summary:
 """
 
+    # Translate model for CLIProxyAPI if enabled
+    translated_model = translate_model_for_cliproxy(model)
+
     client = ClaudeSDKClient(
         options=ClaudeAgentOptions(
-            model=model,
+            model=translated_model,
             system_prompt=(
                 "You are a concise technical summarizer. Extract only the most "
                 "critical information from phase outputs. Use bullet points. "

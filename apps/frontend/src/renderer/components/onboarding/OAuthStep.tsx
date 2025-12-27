@@ -18,7 +18,11 @@ import {
   ChevronDown,
   ChevronRight,
   Users,
-  Lock
+  Lock,
+  Wifi,
+  WifiOff,
+  ExternalLink,
+  Zap
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -26,7 +30,8 @@ import { Label } from '../ui/label';
 import { Card, CardContent } from '../ui/card';
 import { cn } from '../../lib/utils';
 import { loadClaudeProfiles as loadGlobalClaudeProfiles } from '../../stores/claude-profile-store';
-import type { ClaudeProfile } from '../../../shared/types';
+import { ProxyModelMapper } from '../proxy-config/ProxyModelMapper';
+import type { ClaudeProfile, CLIProxyStatus, CLIProxyConfig } from '../../../shared/types';
 
 interface OAuthStepProps {
   onNext: () => void;
@@ -41,6 +46,11 @@ interface OAuthStepProps {
  */
 export function OAuthStep({ onNext, onBack, onSkip }: OAuthStepProps) {
   const { t } = useTranslation('onboarding');
+
+  // CLIProxyAPI state
+  const [cliProxyStatus, setCliProxyStatus] = useState<CLIProxyStatus | null>(null);
+  const [isCheckingProxy, setIsCheckingProxy] = useState(true);
+  const [proxyModels, setProxyModels] = useState<string[]>([]);
 
   // Claude Profiles state
   const [claudeProfiles, setClaudeProfiles] = useState<ClaudeProfile[]>([]);
@@ -63,10 +73,39 @@ export function OAuthStep({ onNext, onBack, onSkip }: OAuthStepProps) {
   // Error state
   const [error, setError] = useState<string | null>(null);
 
-  // Derived state: check if at least one profile is authenticated
-  const hasAuthenticatedProfile = claudeProfiles.some(
-    (profile) => profile.oauthToken || (profile.isDefault && profile.configDir)
-  );
+  // Derived state: check if at least one profile is authenticated OR proxy is connected
+  const hasAuthenticatedProfile = cliProxyStatus?.enabled && cliProxyStatus?.connected
+    ? true
+    : claudeProfiles.some(
+        (profile) => profile.oauthToken || (profile.isDefault && profile.configDir)
+      );
+
+  // Check CLIProxyAPI status on mount
+  useEffect(() => {
+    const checkProxyStatus = async () => {
+      setIsCheckingProxy(true);
+      try {
+        const result = await window.electronAPI.getCliProxyStatus();
+        if (result.success && result.data) {
+          setCliProxyStatus(result.data);
+          
+          // If proxy is enabled and connected, fetch available models
+          if (result.data.enabled && result.data.connected) {
+            const modelsResult = await window.electronAPI.testCliProxyConnection(result.data.url);
+            if (modelsResult.success && modelsResult.data?.models) {
+              setProxyModels(modelsResult.data.models);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to check CLIProxyAPI status:', err);
+      } finally {
+        setIsCheckingProxy(false);
+      }
+    };
+
+    checkProxyStatus();
+  }, []);
 
   // Reusable function to load Claude profiles
   const loadClaudeProfiles = async () => {
@@ -285,33 +324,124 @@ export function OAuthStep({ onNext, onBack, onSkip }: OAuthStepProps) {
     onNext();
   };
 
+  // Test proxy connection
+  const handleTestProxyConnection = async () => {
+    if (!cliProxyStatus) return;
+    setIsCheckingProxy(true);
+    try {
+      const result = await window.electronAPI.testCliProxyConnection(cliProxyStatus.url);
+      if (result.success && result.data) {
+        setCliProxyStatus({
+          ...cliProxyStatus,
+          connected: result.data.connected,
+          error: result.data.connected ? undefined : 'Connection failed'
+        });
+        if (result.data.models) {
+          setProxyModels(result.data.models);
+        }
+      }
+    } catch (err) {
+      setCliProxyStatus({
+        ...cliProxyStatus,
+        connected: false,
+        error: err instanceof Error ? err.message : 'Connection test failed'
+      });
+    } finally {
+      setIsCheckingProxy(false);
+    }
+  };
+
+  // CLIProxyAPI Mode UI - using ProxyModelMapper component
+  const [proxyConfigReady, setProxyConfigReady] = useState(false);
+
+  const renderProxyModeUI = () => (
+    <div className="space-y-6">
+      {/* ProxyModelMapper Component */}
+      <ProxyModelMapper
+        showEnableToggle={false}
+        onConfigChange={(config) => {
+          // Track when config is valid for continue
+          setProxyConfigReady(config.enabled && config.url && config.apiKey ? true : false);
+        }}
+        onSaveSuccess={() => {
+          setProxyConfigReady(true);
+        }}
+      />
+
+      {/* Info about ProxyPal */}
+      <Card className="border border-info/30 bg-info/10">
+        <CardContent className="p-5">
+          <div className="flex items-start gap-4">
+            <Info className="h-5 w-5 text-info shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground mb-1">
+                What is CLIProxyAPI?
+              </p>
+              <p className="text-sm text-muted-foreground mb-2">
+                CLIProxyAPI routes AI requests through ProxyPal, allowing you to use Claude, 
+                GitHub Copilot, Gemini, and more without a Claude Pro/Max subscription.
+              </p>
+              <Button
+                variant="link"
+                size="sm"
+                className="p-0 h-auto text-info"
+                onClick={() => window.electronAPI?.openExternal?.('https://github.com/nicepkg/gpt-runner')}
+              >
+                <ExternalLink className="h-3 w-3 mr-1" />
+                Learn More
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   return (
     <div className="flex h-full flex-col items-center justify-center px-8 py-6">
       <div className="w-full max-w-2xl">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <Users className="h-7 w-7" />
+            <div className={cn(
+              "flex h-14 w-14 items-center justify-center rounded-full",
+              cliProxyStatus?.enabled 
+                ? "bg-primary/10 text-primary"
+                : "bg-primary/10 text-primary"
+            )}>
+              {cliProxyStatus?.enabled ? (
+                <Wifi className="h-7 w-7" />
+              ) : (
+                <Users className="h-7 w-7" />
+              )}
             </div>
           </div>
           <h1 className="text-2xl font-bold text-foreground tracking-tight">
-            Configure Claude Authentication
+            {cliProxyStatus?.enabled 
+              ? 'CLIProxyAPI Configuration'
+              : 'Configure Claude Authentication'
+            }
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Add your Claude accounts to enable AI features
+            {cliProxyStatus?.enabled 
+              ? 'Connect through ProxyPal to access AI features'
+              : 'Add your Claude accounts to enable AI features'
+            }
           </p>
         </div>
 
         {/* Loading state */}
-        {isLoadingProfiles && (
+        {(isLoadingProfiles || isCheckingProxy) && !cliProxyStatus && (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
         )}
 
-        {/* Profile management UI - placeholder for subtask-1-4 */}
-        {!isLoadingProfiles && (
+        {/* CLIProxyAPI Mode UI */}
+        {cliProxyStatus?.enabled && !isCheckingProxy && renderProxyModeUI()}
+
+        {/* OAuth Profile Management UI (when proxy not enabled) */}
+        {!cliProxyStatus?.enabled && !isLoadingProfiles && (
           <div className="space-y-6">
             {/* Error banner */}
             {error && (

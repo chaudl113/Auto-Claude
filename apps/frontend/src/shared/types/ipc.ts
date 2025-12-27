@@ -55,7 +55,7 @@ import type {
   ClaudeAuthResult,
   ClaudeUsageSnapshot
 } from './agent';
-import type { AppSettings, SourceEnvConfig, SourceEnvCheckResult, AutoBuildSourceUpdateCheck, AutoBuildSourceUpdateProgress } from './settings';
+import type { AppSettings, SourceEnvConfig, SourceEnvCheckResult, AutoBuildSourceUpdateCheck, AutoBuildSourceUpdateProgress, CLIProxyStatus, CLIProxyConfig } from './settings';
 import type { AppUpdateInfo, AppUpdateProgress, AppUpdateAvailableEvent, AppUpdateDownloadedEvent } from './app-update';
 import type {
   ChangelogTask,
@@ -597,6 +597,12 @@ export interface ElectronAPI {
 
   // GitHub API (nested for organized access)
   github: import('../../preload/api/modules/github-api').GitHubAPI;
+
+  // CLIProxyAPI configuration
+  getCliProxyStatus: () => Promise<IPCResult<CLIProxyStatus>>;
+  testCliProxyConnection: (url?: string, apiKey?: string) => Promise<IPCResult<{ connected: boolean; models?: string[] }>>;
+  getCliProxyConfig: () => Promise<IPCResult<CLIProxyConfig>>;
+  saveCliProxyConfig: (config: CLIProxyConfig) => Promise<IPCResult<void>>;
 }
 
 declare global {
