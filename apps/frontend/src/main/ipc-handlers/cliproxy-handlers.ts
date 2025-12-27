@@ -17,40 +17,47 @@ function httpRequest(
   options: { headers?: Record<string, string>; timeout?: number }
 ): Promise<{ status: number; statusText: string; data: string }> {
   return new Promise((resolve, reject) => {
-    const parsedUrl = new URL(url);
-    const isHttps = parsedUrl.protocol === 'https:';
-    const httpModule = isHttps ? https : http;
+    try {
+      const parsedUrl = new URL(url);
+      const isHttps = parsedUrl.protocol === 'https:';
+      const httpModule = isHttps ? https : http;
 
-    const requestOptions = {
-      hostname: parsedUrl.hostname,
-      port: parsedUrl.port || (isHttps ? 443 : 80),
-      path: parsedUrl.pathname + parsedUrl.search,
-      method: 'GET',
-      headers: options.headers || {},
-    };
+      const requestOptions = {
+        hostname: parsedUrl.hostname,
+        port: parsedUrl.port || (isHttps ? 443 : 80),
+        path: parsedUrl.pathname + parsedUrl.search,
+        method: 'GET',
+        headers: options.headers || {},
+        timeout: options.timeout || 5000,
+      };
 
-    const req = httpModule.request(requestOptions, (res) => {
-      let data = '';
-      res.on('data', (chunk) => (data += chunk));
-      res.on('end', () => {
-        resolve({
-          status: res.statusCode || 0,
-          statusText: res.statusMessage || '',
-          data,
+      const req = httpModule.request(requestOptions, (res) => {
+        let data = '';
+        res.on('data', (chunk) => (data += chunk));
+        res.on('end', () => {
+          resolve({
+            status: res.statusCode || 0,
+            statusText: res.statusMessage || '',
+            data,
+          });
         });
+        res.on('error', (err) => reject(err));
       });
-    });
 
-    req.on('error', (err) => reject(err));
+      req.on('error', (err) => {
+        console.error('[CLIProxy] Request error:', err.message);
+        reject(err);
+      });
 
-    if (options.timeout) {
-      req.setTimeout(options.timeout, () => {
+      req.on('timeout', () => {
         req.destroy();
         reject(new Error('Request timeout'));
       });
-    }
 
-    req.end();
+      req.end();
+    } catch (err) {
+      reject(err);
+    }
   });
 }
 
@@ -81,7 +88,12 @@ export function registerCliProxyHandlers(): void {
             status.connected = response.status >= 200 && response.status < 300;
           } catch (err) {
             status.connected = false;
-            status.error = err instanceof Error ? err.message : 'Connection failed';
+            const errMsg = err instanceof Error ? err.message : 'Connection failed';
+            if (errMsg.includes('ECONNREFUSED')) {
+              status.error = 'Proxy không chạy';
+            } else {
+              status.error = errMsg;
+            }
           }
         }
 
@@ -141,10 +153,18 @@ export function registerCliProxyHandlers(): void {
           };
         }
       } catch (error) {
-        console.error('[CLIProxy] Connection error:', error);
+        const errMsg = error instanceof Error ? error.message : 'Connection test failed';
+        // Make error messages more user-friendly
+        let friendlyError = errMsg;
+        if (errMsg.includes('ECONNREFUSED')) {
+          friendlyError = 'Proxy không chạy / Proxy not running';
+        } else if (errMsg.includes('timeout') || errMsg.includes('Timeout')) {
+          friendlyError = 'Timeout - Proxy không phản hồi';
+        }
+        console.error('[CLIProxy] Connection error:', errMsg);
         return {
           success: false,
-          error: error instanceof Error ? error.message : 'Connection test failed',
+          error: friendlyError,
         };
       }
     }
