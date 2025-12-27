@@ -115,14 +115,35 @@ def get_cliproxy_model_mappings() -> dict[str, str]:
     """
     Get model mappings from config file or environment variables.
     
-    Priority:
-    1. Config file (modelMappings array)
-    2. Environment variables (CLIPROXY_MODEL_OPUS, etc.)
+    Priority (highest to lowest):
+    1. Config file (modelMappings array) - UI settings take precedence
+    2. Environment variables (CLIPROXY_MODEL_OPUS, etc.) - fallback for automation
     3. Default mappings
     """
     mappings = DEFAULT_MODEL_MAPPINGS.copy()
     
-    # First, load from config file
+    # First, check environment variables (lowest priority after defaults)
+    opus_model = os.environ.get("CLIPROXY_MODEL_OPUS")
+    if opus_model:
+        mappings["claude-opus-4-5-20251101"] = opus_model
+        mappings["claude-opus-4-20250514"] = opus_model
+    
+    sonnet_model = os.environ.get("CLIPROXY_MODEL_SONNET")
+    if sonnet_model:
+        mappings["claude-sonnet-4-5-20250929"] = sonnet_model
+        mappings["claude-sonnet-4-20250514"] = sonnet_model
+    
+    haiku_model = os.environ.get("CLIPROXY_MODEL_HAIKU")
+    if haiku_model:
+        mappings["claude-haiku-4-5-20251001"] = haiku_model
+    
+    # Check for individual model mappings from env
+    for key, value in os.environ.items():
+        if key.startswith("CLIPROXY_MODEL_") and key not in ("CLIPROXY_MODEL_OPUS", "CLIPROXY_MODEL_SONNET", "CLIPROXY_MODEL_HAIKU"):
+            model_name = key.replace("CLIPROXY_MODEL_", "")
+            mappings[model_name] = value
+    
+    # Then, load from config file (highest priority - UI settings override env vars)
     config = _load_cliproxy_config()
     config_mappings = config.get("modelMappings", [])
     
@@ -141,27 +162,6 @@ def get_cliproxy_model_mappings() -> dict[str, str]:
                 mappings["claude-sonnet-4-20250514"] = target
             elif source == "haiku":
                 mappings["claude-haiku-4-5-20251001"] = target
-    
-    # Then, check environment variables (can override config)
-    opus_model = os.environ.get("CLIPROXY_MODEL_OPUS")
-    if opus_model:
-        mappings["claude-opus-4-5-20251101"] = opus_model
-        mappings["claude-opus-4-20250514"] = opus_model
-    
-    sonnet_model = os.environ.get("CLIPROXY_MODEL_SONNET")
-    if sonnet_model:
-        mappings["claude-sonnet-4-5-20250929"] = sonnet_model
-        mappings["claude-sonnet-4-20250514"] = sonnet_model
-    
-    haiku_model = os.environ.get("CLIPROXY_MODEL_HAIKU")
-    if haiku_model:
-        mappings["claude-haiku-4-5-20251001"] = haiku_model
-    
-    # Check for individual model mappings (CLIPROXY_MODEL_claude-opus-4-5-20251101=...)
-    for key, value in os.environ.items():
-        if key.startswith("CLIPROXY_MODEL_") and key not in ("CLIPROXY_MODEL_OPUS", "CLIPROXY_MODEL_SONNET", "CLIPROXY_MODEL_HAIKU"):
-            model_name = key.replace("CLIPROXY_MODEL_", "")
-            mappings[model_name] = value
     
     return mappings
 

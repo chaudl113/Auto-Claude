@@ -180,6 +180,14 @@ Current question: {message}"""
     translated_model = translate_model_for_cliproxy(model)
     sdk_env = get_sdk_env_vars()
 
+    if translated_model != model:
+        debug(
+            "insights_runner",
+            "Model translated for CLIProxyAPI",
+            original_model=model,
+            translated_model=translated_model,
+        )
+
     try:
         # Create Claude SDK client with appropriate settings for insights
         client = ClaudeSDKClient(
