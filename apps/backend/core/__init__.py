@@ -1,42 +1,54 @@
 """
-Core Framework Module
-=====================
+Core Module
+============
 
-Core components for the Auto Claude autonomous coding framework.
+Central infrastructure for Auto Claude framework.
 """
 
-# Note: We use lazy imports here because the full agent module has many dependencies
-# that may not be needed for basic operations like workspace management.
+from .agent_cache import AgentStateCache, get_agent_cache
+from .client import create_client
+from .debug import (
+    debug,
+    debug_detailed,
+    debug_error,
+    debug_info,
+    debug_section,
+    debug_success,
+    debug_timer,
+    debug_async_timer,
+    is_debug_enabled,
+    get_debug_level,
+)
+from .progress import count_subtasks, is_build_complete
+from .worktree import WorktreeManager
+from .worktree_pool import WorktreePool, get_worktree_pool, PooledWorktree
+
+# StatusManager is imported from ui module
+# This is a re-export for backwards compatibility
+def get_status_manager(project_dir):
+    """Get StatusManager instance (imported from ui module)."""
+    from ui.status import StatusManager
+    return StatusManager(project_dir)
 
 __all__ = [
-    "run_autonomous_agent",
-    "run_followup_planner",
-    "WorkspaceManager",
+    "create_client",
+    "AgentStateCache",
+    "get_agent_cache",
+    "WorktreePool",
+    "get_worktree_pool",
+    "PooledWorktree",
+    "debug",
+    "debug_detailed",
+    "debug_error",
+    "debug_info",
+    "debug_section",
+    "debug_success",
+    "debug_timer",
+    "debug_async_timer",
+    "is_debug_enabled",
+    "get_debug_level",
+    "count_subtasks",
+    "is_build_complete",
     "WorktreeManager",
-    "ProgressTracker",
+    "get_status_manager",
 ]
-
-
-def __getattr__(name):
-    """Lazy imports to avoid circular dependencies and heavy imports."""
-    if name in ("run_autonomous_agent", "run_followup_planner"):
-        from .agent import run_autonomous_agent, run_followup_planner
-
-        return locals()[name]
-    elif name == "WorkspaceManager":
-        from .workspace import WorkspaceManager
-
-        return WorkspaceManager
-    elif name == "WorktreeManager":
-        from .worktree import WorktreeManager
-
-        return WorktreeManager
-    elif name == "ProgressTracker":
-        from .progress import ProgressTracker
-
-        return ProgressTracker
-    elif name in ("create_claude_client", "ClaudeClient"):
-        from . import client as _client
-
-        return getattr(_client, name)
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

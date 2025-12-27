@@ -137,6 +137,9 @@ export interface SourceEnvCheckResult {
   hasToken: boolean;
   sourcePath?: string;
   error?: string;
+  source?: 'profile' | 'env' | undefined;
+  profileId?: string;
+  profileName?: string;
 }
 
 // Auto Claude Source Update Types

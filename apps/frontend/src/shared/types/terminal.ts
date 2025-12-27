@@ -117,6 +117,14 @@ export interface SDKRateLimitInfo {
   };
   /** Why the swap occurred: 'proactive' (before limit) or 'reactive' (after limit hit) */
   swapReason?: 'proactive' | 'reactive';
+
+  // JSON error specific fields
+  /** Plan type from JSON error (e.g., 'plus', 'pro', etc.) */
+  planType?: string;
+  /** Reset time in seconds from JSON error */
+  resetsInSeconds?: number;
+  /** Unix timestamp when limit resets from JSON error */
+  resetsAt?: number;
 }
 
 /**

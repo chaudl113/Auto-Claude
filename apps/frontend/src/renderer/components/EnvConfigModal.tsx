@@ -94,6 +94,10 @@ export function EnvConfigModal({
           if (tokenResult.data.hasToken) {
             // Token exists, show success state
             setSuccess(true);
+            // If token is from profile, select that profile
+            if (tokenResult.data.source === 'profile' && tokenResult.data.profileId) {
+              setSelectedProfileId(tokenResult.data.profileId);
+            }
           }
         } else {
           setError(tokenResult.error || 'Failed to check token status');

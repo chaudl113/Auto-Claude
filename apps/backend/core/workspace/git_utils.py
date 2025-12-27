@@ -236,10 +236,14 @@ def get_file_content_from_ref(
         ["git", "show", f"{ref}:{file_path}"],
         cwd=project_dir,
         capture_output=True,
-        text=True,
     )
     if result.returncode == 0:
-        return result.stdout
+        # Try to decode with error handling for non-UTF8 files
+        try:
+            return result.stdout.decode("utf-8")
+        except UnicodeDecodeError:
+            # File has non-UTF8 content, use replacement mode
+            return result.stdout.decode("utf-8", errors="replace")
     return None
 
 

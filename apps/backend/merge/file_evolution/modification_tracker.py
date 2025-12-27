@@ -177,13 +177,21 @@ class ModificationTracker:
 
             for file_path in changed_files:
                 # Get the diff for this file
-                diff_result = subprocess.run(
-                    ["git", "diff", f"{target_branch}...HEAD", "--", file_path],
-                    cwd=worktree_path,
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                )
+                try:
+                    diff_result = subprocess.run(
+                        ["git", "diff", f"{target_branch}...HEAD", "--", file_path],
+                        cwd=worktree_path,
+                        capture_output=True,
+                        check=True,
+                    )
+                    # Try to decode diff with error handling
+                    try:
+                        diff_output = diff_result.stdout.decode("utf-8")
+                    except UnicodeDecodeError:
+                        # Diff has non-UTF8 content
+                        diff_output = diff_result.stdout.decode("utf-8", errors="replace")
+                except subprocess.CalledProcessError:
+                    diff_output = ""
 
                 # Get content before (from target branch) and after (current)
                 try:
@@ -191,10 +199,14 @@ class ModificationTracker:
                         ["git", "show", f"{target_branch}:{file_path}"],
                         cwd=worktree_path,
                         capture_output=True,
-                        text=True,
                         check=True,
                     )
-                    old_content = show_result.stdout
+                    # Try to decode with error handling
+                    try:
+                        old_content = show_result.stdout.decode("utf-8")
+                    except UnicodeDecodeError:
+                        # File has non-UTF8 content, treat as binary
+                        old_content = show_result.stdout.decode("utf-8", errors="replace")
                 except subprocess.CalledProcessError:
                     # File is new
                     old_content = ""
@@ -218,7 +230,7 @@ class ModificationTracker:
                     old_content=old_content,
                     new_content=new_content,
                     evolutions=evolutions,
-                    raw_diff=diff_result.stdout,
+                    raw_diff=diff_output,
                 )
 
             logger.info(

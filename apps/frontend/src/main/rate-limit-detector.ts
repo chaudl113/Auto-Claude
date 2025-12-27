@@ -12,6 +12,12 @@ import { getClaudeProfileManager } from './claude-profile-manager';
 const RATE_LIMIT_PATTERN = /Limit reached\s*[·•]\s*resets\s+(.+?)(?:\s*$|\n)/im;
 
 /**
+ * Regex pattern to detect JSON error format
+ * Matches: {"error":{"type":"usage_limit_reached","message":"The usage limit has been reached",...}}
+ */
+const JSON_ERROR_PATTERN = /\{\s*"error"\s*:\s*\{[^}]*"type"\s*:\s*"usage_limit_reached"/i;
+
+/**
  * Additional patterns that might indicate rate limiting
  */
 const RATE_LIMIT_INDICATORS = [
@@ -61,6 +67,12 @@ export interface RateLimitDetectionResult {
   };
   /** Original error message */
   originalError?: string;
+  /** JSON error specific fields */
+  jsonError?: {
+    planType?: string;
+    resetsInSeconds?: number;
+    resetsAt?: number;
+  };
 }
 
 /**
@@ -92,13 +104,104 @@ function classifyLimitType(resetTimeStr: string): 'session' | 'weekly' {
 }
 
 /**
+ * Parse JSON error format and extract rate limit info
+ * Expected format: {"error":{"type":"usage_limit_reached","message":"The usage limit has been reached","plan_type":"plus","resets_at":1766860741,"resets_in_seconds":8681}}
+ */
+function parseJSONError(output: string): RateLimitDetectionResult | null {
+  const jsonMatch = output.match(/\{[^{}]*"error"\s*:\s*\{[^}]*\}\s*\}/s);
+
+  if (!jsonMatch) {
+    return null;
+  }
+
+  try {
+    const errorObj = JSON.parse(jsonMatch[0]);
+
+    if (!errorObj.error || errorObj.error.type !== 'usage_limit_reached') {
+      return null;
+    }
+
+    // Extract reset time from JSON
+    const resetsInSeconds = errorObj.error.resets_in_seconds;
+    const resetsAt = errorObj.error.resets_at;
+    const planType = errorObj.error.plan_type;
+
+    // Calculate human-readable reset time
+    let resetTimeStr = '';
+    if (resetsInSeconds !== undefined) {
+      const hours = Math.floor(resetsInSeconds / 3600);
+      const minutes = Math.floor((resetsInSeconds % 3600) / 60);
+      const seconds = resetsInSeconds % 60;
+
+      if (hours > 24) {
+        const days = Math.floor(hours / 24);
+        const remainingHours = hours % 24;
+        resetTimeStr = `${days}d ${remainingHours}h`;
+      } else if (hours > 0) {
+        resetTimeStr = `${hours}h ${minutes}m`;
+      } else if (minutes > 0) {
+        resetTimeStr = `${minutes}m ${seconds}s`;
+      } else {
+        resetTimeStr = `${seconds}s`;
+      }
+    } else if (resetsAt) {
+      // Use timestamp if seconds not available
+      const resetDate = new Date(resetsAt * 1000);
+      resetTimeStr = resetDate.toLocaleString();
+    }
+
+    const profileManager = getClaudeProfileManager();
+    const effectiveProfileId = profileManager.getActiveProfile().id;
+
+    // Record the rate limit event
+    try {
+      profileManager.recordRateLimitEvent(effectiveProfileId, resetTimeStr || 'Unknown');
+    } catch (err) {
+      console.error('[RateLimitDetector] Failed to record rate limit event:', err);
+    }
+
+    // Find best alternative profile
+    const bestProfile = profileManager.getBestAvailableProfile(effectiveProfileId);
+
+    return {
+      isRateLimited: true,
+      resetTime: resetTimeStr || 'Unknown',
+      limitType: 'weekly', // JSON errors typically indicate weekly limits
+      profileId: effectiveProfileId,
+      suggestedProfile: bestProfile ? {
+        id: bestProfile.id,
+        name: bestProfile.name
+      } : undefined,
+      originalError: output,
+      // Add JSON-specific fields
+      jsonError: {
+        planType,
+        resetsInSeconds,
+        resetsAt
+      }
+    };
+  } catch (err) {
+    console.error('[RateLimitDetector] Failed to parse JSON error:', err);
+    return null;
+  }
+}
+
+/**
  * Detect rate limit from output (stdout + stderr combined)
  */
 export function detectRateLimit(
   output: string,
   profileId?: string
 ): RateLimitDetectionResult {
-  // Check for the primary rate limit pattern
+  // First, check for JSON error format (new format)
+  if (JSON_ERROR_PATTERN.test(output)) {
+    const jsonDetection = parseJSONError(output);
+    if (jsonDetection && jsonDetection.isRateLimited) {
+      return jsonDetection;
+    }
+  }
+
+  // Then check for the primary rate limit pattern (text format)
   const match = output.match(RATE_LIMIT_PATTERN);
 
   if (match) {
@@ -347,8 +450,15 @@ export interface SDKRateLimitInfo {
     id: string;
     name: string;
   };
-  /** Why the swap occurred: 'proactive' (before limit) or 'reactive' (after limit hit) */
+  /** Why this swap occurred: 'proactive' (before limit) or 'reactive' (after limit hit) */
   swapReason?: 'proactive' | 'reactive';
+// JSON error specific fields
+/** Plan type from JSON error (e.g., 'plus', 'pro', etc.) */
+planType?: string;
+/** Reset time in seconds from JSON error */
+resetsInSeconds?: number;
+/** Unix timestamp when limit resets from JSON error */
+resetsAt?: number;
 }
 
 /**
@@ -377,6 +487,9 @@ export function createSDKRateLimitInfo(
     profileName: profile?.name,
     suggestedProfile: detection.suggestedProfile,
     detectedAt: new Date(),
-    originalError: detection.originalError
+    originalError: detection.originalError,
+    planType: detection.jsonError?.planType,
+    resetsInSeconds: detection.jsonError?.resetsInSeconds,
+    resetsAt: detection.jsonError?.resetsAt
   };
 }

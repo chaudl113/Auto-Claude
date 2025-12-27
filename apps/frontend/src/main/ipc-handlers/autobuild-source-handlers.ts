@@ -7,6 +7,7 @@ import { existsSync, readFileSync, writeFileSync } from 'fs';
 import type { AutoBuildSourceUpdateProgress, SourceEnvConfig, SourceEnvCheckResult } from '../../shared/types';
 import { checkForUpdates as checkSourceUpdates, downloadAndApplyUpdate, getBundledVersion, getEffectiveVersion, getEffectiveSourcePath } from '../auto-claude-updater';
 import { debugLog } from '../../shared/utils/debug-logger';
+import { getClaudeProfileManager } from '../claude-profile-manager';
 
 
 /**
@@ -286,6 +287,25 @@ export function registerAutobuildSourceHandlers(
           };
         }
 
+        // First, check if active Claude profile has OAuth token (preferred)
+        const profileManager = getClaudeProfileManager();
+        const activeProfile = profileManager.getActiveProfile();
+
+        if (activeProfile && activeProfile.oauthToken) {
+          console.log('[autobuild-source] Found OAuth token in active profile:', activeProfile.name);
+          return {
+            success: true,
+            data: {
+              hasToken: true,
+              sourcePath,
+              source: 'profile',
+              profileId: activeProfile.id,
+              profileName: activeProfile.name
+            }
+          };
+        }
+
+        // Fallback: check .env file (for default profile or backward compatibility)
         const envPath = path.join(sourcePath, '.env');
         if (!existsSync(envPath)) {
           return {
@@ -306,7 +326,8 @@ export function registerAutobuildSourceHandlers(
           success: true,
           data: {
             hasToken,
-            sourcePath
+            sourcePath,
+            source: hasToken ? 'env' : undefined
           }
         };
       } catch (error) {

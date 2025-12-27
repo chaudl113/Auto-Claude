@@ -293,14 +293,20 @@ export function SDKRateLimitModal() {
           {sdkRateLimitInfo.resetTime && (
             <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-4">
               <Clock className="h-5 w-5 text-muted-foreground shrink-0" />
-              <div>
+              <div className="flex-1">
                 <p className="text-sm font-medium text-foreground">
                   Resets {sdkRateLimitInfo.resetTime}
                 </p>
+                {sdkRateLimitInfo.planType && (
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Plan: {sdkRateLimitInfo.planType}
+                  </p>
+                )}
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {sdkRateLimitInfo.limitType === 'weekly'
                     ? 'Weekly limit - resets in about a week'
                     : 'Session limit - resets in a few hours'}
+                  {sdkRateLimitInfo.resetsInSeconds && ` (${Math.round(sdkRateLimitInfo.resetsInSeconds / 60)} minutes)`}
                 </p>
               </div>
             </div>

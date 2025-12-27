@@ -257,7 +257,7 @@ export function ProxyModelMapper({
                   type={showApiKey ? 'text' : 'password'}
                   value={config.apiKey}
                   onChange={(e) => updateConfig({ apiKey: e.target.value })}
-                  placeholder="proxypal-local"
+                  placeholder="proxy-local"
                   disabled={!config.enabled}
                   className="h-8 text-sm pr-10"
                 />
