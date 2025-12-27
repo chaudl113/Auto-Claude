@@ -1,0 +1,86 @@
+{
+  "status": {
+    "backlog": "Chờ xử lý",
+    "todo": "Cần làm",
+    "in_progress": "Đang thực hiện",
+    "review": "Đang xem xét",
+    "complete": "Hoàn thành",
+    "archived": "Đã lưu trữ"
+  },
+  "actions": {
+    "start": "Bắt đầu",
+    "stop": "Dừng",
+    "recover": "Khôi phục",
+    "resume": "Tiếp tục",
+    "archive": "Lưu trữ",
+    "delete": "Xóa",
+    "view": "Xem chi tiết"
+  },
+  "labels": {
+    "running": "Đang chạy",
+    "aiReview": "AI đánh giá",
+    "needsReview": "Cần đánh giá",
+    "pending": "Đang chờ",
+    "stuck": "Bị kẹt",
+    "incomplete": "Chưa hoàn thành",
+    "recovering": "Đang khôi phục...",
+    "needsRecovery": "Cần khôi phục",
+    "needsResume": "Cần tiếp tục"
+  },
+  "reviewReason": {
+    "completed": "Đã hoàn thành",
+    "hasErrors": "Có lỗi",
+    "qaIssues": "Vấn đề QA",
+    "approvePlan": "Duyệt kế hoạch"
+  },
+  "tooltips": {
+    "archiveTask": "Lưu trữ tác vụ",
+    "archiveAllDone": "Lưu trữ tất cả tác vụ hoàn thành"
+  },
+  "creation": {
+    "title": "Tạo tác vụ mới",
+    "description": "Mô tả những gì bạn muốn xây dựng",
+    "placeholder": "Mô tả tác vụ của bạn..."
+  },
+  "empty": {
+    "title": "Chưa có tác vụ",
+    "description": "Tạo tác vụ đầu tiên để bắt đầu"
+  },
+  "kanban": {
+    "emptyBacklog": "Không có tác vụ đã lên kế hoạch",
+    "emptyBacklogHint": "Thêm tác vụ để bắt đầu",
+    "emptyInProgress": "Không có gì đang chạy",
+    "emptyInProgressHint": "Bắt đầu tác vụ từ Chờ xử lý",
+    "emptyAiReview": "Không có tác vụ đang xem xét",
+    "emptyAiReviewHint": "AI sẽ xem xét các tác vụ hoàn thành",
+    "emptyHumanReview": "Không có gì cần xem xét",
+    "emptyHumanReviewHint": "Các tác vụ chờ duyệt sẽ xuất hiện ở đây",
+    "emptyDone": "Không có tác vụ hoàn thành",
+    "emptyDoneHint": "Các tác vụ đã duyệt sẽ xuất hiện ở đây",
+    "emptyDefault": "Không có tác vụ",
+    "dropHere": "Thả vào đây",
+    "showArchived": "Hiển thị đã lưu trữ"
+  },
+  "execution": {
+    "phases": {
+      "idle": "Chờ",
+      "planning": "Lập kế hoạch",
+      "coding": "Viết code",
+      "reviewing": "Đánh giá",
+      "fixing": "Sửa lỗi",
+      "complete": "Hoàn thành",
+      "failed": "Thất bại"
+    },
+    "labels": {
+      "interrupted": "Bị gián đoạn",
+      "progress": "Tiến độ",
+      "entry": "mục",
+      "entries": "mục"
+    },
+    "shortPhases": {
+      "plan": "KH",
+      "code": "Code",
+      "qa": "QA"
+    }
+  }
+}

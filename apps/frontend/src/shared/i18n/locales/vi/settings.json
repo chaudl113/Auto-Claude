@@ -1,0 +1,240 @@
+{
+  "title": "Cài đặt",
+  "tabs": {
+    "app": "Cài đặt ứng dụng",
+    "project": "Cài đặt dự án"
+  },
+  "sections": {
+    "appearance": {
+      "title": "Giao diện",
+      "description": "Tùy chỉnh giao diện Auto Claude"
+    },
+    "display": {
+      "title": "Hiển thị",
+      "description": "Điều chỉnh kích thước các thành phần UI"
+    },
+    "language": {
+      "title": "Ngôn ngữ",
+      "description": "Chọn ngôn ngữ ưa thích của bạn"
+    },
+    "agent": {
+      "title": "Cài đặt Agent",
+      "description": "Model mặc định và framework"
+    },
+    "paths": {
+      "title": "Đường dẫn",
+      "description": "Đường dẫn Python và framework"
+    },
+    "integrations": {
+      "title": "Tích hợp",
+      "description": "API keys & tài khoản Claude"
+    },
+    "updates": {
+      "title": "Cập nhật",
+      "description": "Cập nhật Auto Claude"
+    },
+    "notifications": {
+      "title": "Thông báo",
+      "description": "Tùy chọn cảnh báo"
+    }
+  },
+  "language": {
+    "label": "Ngôn ngữ giao diện",
+    "description": "Chọn ngôn ngữ cho giao diện ứng dụng"
+  },
+  "scale": {
+    "presets": "Preset tỷ lệ",
+    "presetsDescription": "Tùy chọn tỷ lệ nhanh cho các preference phổ biến",
+    "fineTune": "Tinh chỉnh tỷ lệ",
+    "fineTuneDescription": "Điều chỉnh từ 75% đến 200% theo bước 5%",
+    "default": "Mặc định",
+    "comfortable": "Thoải mái",
+    "large": "Lớn",
+    "preview": "Thay đổi xem trước ngay. Nhấn Lưu cài đặt để lưu lại."
+  },
+  "general": {
+    "otherAgentSettings": "Cài đặt Agent khác",
+    "otherAgentSettingsDescription": "Các tùy chọn cấu hình agent bổ sung",
+    "agentFramework": "Agent Framework",
+    "agentFrameworkDescription": "Framework coding sử dụng cho các tác vụ tự động",
+    "agentFrameworkAutoClaude": "Auto Claude",
+    "aiTerminalNaming": "Đặt tên Terminal bằng AI",
+    "aiTerminalNamingDescription": "Tự động đặt tên terminal dựa trên lệnh (sử dụng Haiku)",
+    "featureModelSettings": "Cài đặt Model tính năng",
+    "featureModelSettingsDescription": "Model và mức suy nghĩ cho Insights, Ideation và Roadmap",
+    "model": "Model",
+    "thinkingLevel": "Mức độ suy nghĩ",
+    "paths": "Đường dẫn",
+    "pathsDescription": "Cấu hình đường dẫn executable và framework",
+    "pythonPath": "Đường dẫn Python",
+    "pythonPathDescription": "Đường dẫn đến Python executable (để trống cho mặc định)",
+    "pythonPathPlaceholder": "python3 (mặc định)",
+    "autoClaudePath": "Đường dẫn Auto Claude",
+    "autoClaudePathDescription": "Đường dẫn tương đối đến thư mục auto-claude trong dự án",
+    "autoClaudePathPlaceholder": "auto-claude (mặc định)",
+    "autoNameTerminals": "Tự động đặt tên terminals",
+    "autoNameTerminalsDescription": "Sử dụng AI để tạo tên mô tả cho các tab terminal dựa trên hoạt động của chúng"
+  },
+  "theme": {
+    "title": "Giao diện",
+    "description": "Tùy chỉnh giao diện Auto Claude",
+    "mode": "Chế độ",
+    "modeDescription": "Chọn giữa theme sáng và tối",
+    "light": "Sáng",
+    "dark": "Tối",
+    "system": "Hệ thống",
+    "colorTheme": "Theme màu",
+    "colorThemeDescription": "Chọn bảng màu ưa thích của bạn"
+  },
+  "updates": {
+    "title": "Cập nhật",
+    "description": "Quản lý cập nhật Auto Claude",
+    "appUpdateReady": "Bản cập nhật sẵn sàng",
+    "newVersion": "Phiên bản mới",
+    "released": "Phát hành",
+    "downloading": "Đang tải...",
+    "updateDownloaded": "Đã tải bản cập nhật! Nhấn Cài đặt để khởi động lại và áp dụng.",
+    "installAndRestart": "Cài đặt và khởi động lại",
+    "downloadUpdate": "Tải bản cập nhật",
+    "version": "Phiên bản",
+    "loading": "Đang tải...",
+    "checkingForUpdates": "Đang kiểm tra cập nhật...",
+    "newVersionAvailable": "Phiên bản mới có sẵn:",
+    "latestVersion": "Bạn đang chạy phiên bản mới nhất.",
+    "viewRelease": "Xem bản phát hành đầy đủ trên GitHub",
+    "unableToCheck": "Không thể kiểm tra cập nhật",
+    "checkForUpdates": "Kiểm tra cập nhật",
+    "autoUpdateProjects": "Tự động cập nhật dự án",
+    "autoUpdateProjectsDescription": "Tự động cập nhật Auto Claude trong dự án khi có phiên bản mới",
+    "betaUpdates": "Cập nhật Beta",
+    "betaUpdatesDescription": "Nhận phiên bản beta pre-release với tính năng mới (có thể kém ổn định hơn)"
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "description": "Cấu hình tùy chọn thông báo mặc định",
+    "onTaskComplete": "Khi tác vụ hoàn thành",
+    "onTaskCompleteDescription": "Thông báo khi tác vụ hoàn thành thành công",
+    "onTaskFailed": "Khi tác vụ thất bại",
+    "onTaskFailedDescription": "Thông báo khi tác vụ gặp lỗi",
+    "onReviewNeeded": "Khi cần đánh giá",
+    "onReviewNeededDescription": "Thông báo khi QA yêu cầu đánh giá của bạn",
+    "sound": "Âm thanh",
+    "soundDescription": "Phát âm thanh với thông báo"
+  },
+  "actions": {
+    "save": "Lưu cài đặt",
+    "rerunWizard": "Chạy lại trình hướng dẫn",
+    "rerunWizardDescription": "Bắt đầu lại trình hướng dẫn cài đặt"
+  },
+  "projectSections": {
+    "general": {
+      "title": "Chung",
+      "description": "Auto-Build và cấu hình agent"
+    },
+    "claude": {
+      "title": "Xác thực Claude",
+      "description": "Xác thực Claude"
+    },
+    "linear": {
+      "title": "Linear",
+      "description": "Tích hợp Linear"
+    },
+    "github": {
+      "title": "GitHub",
+      "description": "Đồng bộ GitHub issues"
+    },
+    "memory": {
+      "title": "Memory",
+      "description": "Backend memory Graphiti"
+    }
+  },
+  "agentProfile": {
+    "label": "Hồ sơ Agent",
+    "title": "Hồ sơ Agent mặc định",
+    "sectionDescription": "Chọn cấu hình preset cho model và mức suy nghĩ",
+    "profilesInfo": "Hồ sơ agent cung cấp cấu hình preset cho model Claude và mức suy nghĩ. Khi bạn tạo tác vụ mới, các cài đặt này sẽ được sử dụng làm mặc định. Bạn luôn có thể ghi đè chúng trong trình tạo tác vụ.",
+    "custom": "Tùy chỉnh",
+    "customConfiguration": "Cấu hình tùy chỉnh",
+    "customDescription": "Chọn model & mức suy nghĩ",
+    "phaseConfiguration": "Cấu hình giai đoạn",
+    "phaseConfigurationDescription": "Tùy chỉnh model và mức suy nghĩ cho mỗi giai đoạn",
+    "clickToCustomize": "Nhấn để tùy chỉnh",
+    "model": "Model",
+    "thinking": "Suy nghĩ",
+    "thinkingLevel": "Mức độ suy nghĩ",
+    "selectModel": "Chọn model",
+    "selectThinkingLevel": "Chọn mức suy nghĩ",
+    "perPhaseOptimization": "(tối ưu theo giai đoạn)",
+    "resetToDefaults": "Đặt lại mặc định",
+    "phaseConfigNote": "Các cài đặt này sẽ được sử dụng làm mặc định khi tạo tác vụ mới với hồ sơ Auto. Bạn có thể ghi đè chúng cho từng tác vụ trong trình tạo tác vụ.",
+    "phases": {
+      "spec": {
+        "label": "Tạo Spec",
+        "description": "Khám phá, yêu cầu, thu thập ngữ cảnh"
+      },
+      "planning": {
+        "label": "Lập kế hoạch",
+        "description": "Lập kế hoạch triển khai và kiến trúc"
+      },
+      "coding": {
+        "label": "Viết code",
+        "description": "Triển khai code thực tế"
+      },
+      "qa": {
+        "label": "Đánh giá QA",
+        "description": "Đảm bảo chất lượng và xác nhận"
+      }
+    }
+  },
+  "workspace": {
+    "roles": {
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "mobile": "Mobile",
+      "shared": "Dùng chung",
+      "apiGateway": "API Gateway",
+      "worker": "Worker",
+      "other": "Khác"
+    }
+  },
+  "integrations": {
+    "title": "Tích hợp",
+    "description": "Quản lý tài khoản Claude và API keys",
+    "claudeAccounts": "Tài khoản Claude",
+    "claudeAccountsDescription": "Thêm nhiều gói Claude để tự động chuyển đổi khi bạn đạt giới hạn.",
+    "noAccountsYet": "Chưa có tài khoản được cấu hình",
+    "default": "Mặc định",
+    "active": "Đang hoạt động",
+    "authenticated": "Đã xác thực",
+    "needsAuth": "Cần xác thực",
+    "authenticate": "Xác thực",
+    "setActive": "Đặt làm hoạt động",
+    "manualTokenEntry": "Nhập token thủ công",
+    "runSetupToken": "Chạy claude setup-token để lấy token của bạn",
+    "tokenPlaceholder": "sk-ant-oat01-...",
+    "emailPlaceholder": "Email (tùy chọn, để hiển thị)",
+    "saveToken": "Lưu token",
+    "accountNamePlaceholder": "Tên tài khoản (vd: Công việc, Cá nhân)",
+    "autoSwitching": "Chuyển tài khoản tự động",
+    "autoSwitchingDescription": "Tự động chuyển giữa các tài khoản Claude để tránh gián đoạn. Cấu hình giám sát chủ động để chuyển trước khi đạt giới hạn.",
+    "enableAutoSwitching": "Bật chuyển đổi tự động",
+    "masterSwitch": "Công tắc chính cho tất cả tính năng auto-swap",
+    "proactiveMonitoring": "Giám sát chủ động",
+    "proactiveDescription": "Kiểm tra sử dụng thường xuyên và chuyển trước khi đạt giới hạn",
+    "checkUsageEvery": "Kiểm tra sử dụng mỗi",
+    "seconds15": "15 giây",
+    "seconds30": "30 giây (khuyến nghị)",
+    "minute1": "1 phút",
+    "disabled": "Tắt",
+    "sessionThreshold": "Ngưỡng sử dụng phiên",
+    "sessionThresholdDescription": "Chuyển khi sử dụng phiên đạt mức này (khuyến nghị: 95%)",
+    "weeklyThreshold": "Ngưỡng sử dụng hàng tuần",
+    "weeklyThresholdDescription": "Chuyển khi sử dụng hàng tuần đạt mức này (khuyến nghị: 99%)",
+    "reactiveRecovery": "Khôi phục phản ứng",
+    "reactiveDescription": "Auto-swap khi gặp giới hạn tốc độ bất ngờ",
+    "apiKeys": "API Keys",
+    "apiKeysInfo": "Keys đặt ở đây được sử dụng làm mặc định. Các dự án riêng có thể ghi đè trong cài đặt của chúng.",
+    "openaiKey": "OpenAI API Key",
+    "openaiKeyDescription": "Bắt buộc cho backend memory Graphiti (embeddings)"
+  }
+}

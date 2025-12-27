@@ -19,6 +19,15 @@ import frWelcome from './locales/fr/welcome.json';
 import frOnboarding from './locales/fr/onboarding.json';
 import frDialogs from './locales/fr/dialogs.json';
 
+// Import Vietnamese translation resources
+import viCommon from './locales/vi/common.json';
+import viNavigation from './locales/vi/navigation.json';
+import viSettings from './locales/vi/settings.json';
+import viTasks from './locales/vi/tasks.json';
+import viWelcome from './locales/vi/welcome.json';
+import viOnboarding from './locales/vi/onboarding.json';
+import viDialogs from './locales/vi/dialogs.json';
+
 export const defaultNS = 'common';
 
 export const resources = {
@@ -39,6 +48,15 @@ export const resources = {
     welcome: frWelcome,
     onboarding: frOnboarding,
     dialogs: frDialogs
+  },
+  vi: {
+    common: viCommon,
+    navigation: viNavigation,
+    settings: viSettings,
+    tasks: viTasks,
+    welcome: viWelcome,
+    onboarding: viOnboarding,
+    dialogs: viDialogs
   }
 } as const;
 

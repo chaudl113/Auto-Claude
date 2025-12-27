@@ -1,0 +1,102 @@
+{
+  "buttons": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "skip": "Bỏ qua",
+    "next": "Tiếp",
+    "back": "Quay lại",
+    "close": "Đóng",
+    "initialize": "Khởi tạo",
+    "delete": "Xóa",
+    "confirm": "Xác nhận",
+    "retry": "Thử lại",
+    "create": "Tạo mới",
+    "open": "Mở",
+    "start": "Bắt đầu",
+    "stop": "Dừng",
+    "refresh": "Làm mới",
+    "merge": "Gộp",
+    "discard": "Bỏ",
+    "switch": "Chuyển",
+    "add": "Thêm",
+    "gotIt": "Đã hiểu",
+    "continue": "Tiếp tục",
+    "saving": "Đang lưu..."
+  },
+  "labels": {
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "initializing": "Đang khởi tạo...",
+    "saving": "Đang lưu...",
+    "noData": "Không có dữ liệu",
+    "optional": "Tùy chọn",
+    "required": "Bắt buộc",
+    "dismiss": "Bỏ qua"
+  },
+  "time": {
+    "justNow": "Vừa xong",
+    "minutesAgo": "{{count}} phút trước",
+    "hoursAgo": "{{count}} giờ trước",
+    "daysAgo": "{{count}} ngày trước"
+  },
+  "errors": {
+    "generic": "Đã xảy ra lỗi",
+    "networkError": "Lỗi mạng",
+    "notFound": "Không tìm thấy",
+    "unauthorized": "Không có quyền truy cập"
+  },
+  "notification": {
+    "accountSwitched": "Đã chuyển tài khoản",
+    "swapFrom": "Chuyển từ",
+    "swapTo": "sang",
+    "swapReason": "(chuyển {{reason}})"
+  },
+  "rateLimit": {
+    "title": "Giới hạn tốc độ",
+    "resetsAt": "Đặt lại lúc {{time}}",
+    "hitLimit": "{{source}} đã đạt giới hạn sử dụng",
+    "clickToManage": "Nhấn để quản lý →",
+    "modalTitle": "Đã đạt giới hạn sử dụng Claude Code",
+    "modalDescription": "Bạn đã đạt giới hạn sử dụng Claude Code trong kỳ này.",
+    "profile": "Hồ sơ: {{name}}",
+    "autoSwitching": "Tự động chuyển sang {{name}}",
+    "autoSwitchingDescription": "Claude sẽ tự động khởi động lại với tài khoản khác của bạn",
+    "resetsTime": "Đặt lại lúc {{time}}",
+    "usageRestored": "Quota của bạn sẽ được khôi phục vào thời gian này",
+    "switchAccount": "Chuyển tài khoản Claude",
+    "useAnotherAccount": "Sử dụng tài khoản khác",
+    "recommended": "Khuyến nghị: {{name}} có nhiều dung lượng hơn.",
+    "otherSubscriptions": "Bạn có các gói Claude khác đã cấu hình. Chuyển để tiếp tục làm việc:",
+    "selectAccount": "Chọn tài khoản...",
+    "switching": "Đang chuyển...",
+    "addNewAccount": "Thêm tài khoản mới...",
+    "addAnotherSubscription": "Thêm gói Claude khác để tự động chuyển khi bạn đạt giới hạn.",
+    "addAnotherAccount": "Thêm tài khoản khác:",
+    "connectAccount": "Kết nối tài khoản Claude:",
+    "accountNamePlaceholder": "Tên tài khoản (vd: Công việc, Cá nhân)",
+    "willOpenLogin": "Điều này sẽ mở đăng nhập Claude để xác thực tài khoản mới.",
+    "autoSwitchOnRateLimit": "Tự động chuyển khi đạt giới hạn",
+    "upgradeTitle": "Nâng cấp để có thêm quota",
+    "upgradeDescription": "Nâng cấp gói Claude của bạn để có giới hạn sử dụng cao hơn.",
+    "upgradeSubscription": "Nâng cấp gói",
+    "sources": {
+      "changelog": "Nhật ký thay đổi",
+      "task": "Tác vụ",
+      "roadmap": "Lộ trình",
+      "ideation": "Ý tưởng",
+      "titleGenerator": "Tạo tiêu đề",
+      "claude": "Claude"
+    }
+  },
+  "prReview": {
+    "reviewing": "Đang xem xét",
+    "reviewed": "Đã xem xét",
+    "approved": "Đã duyệt",
+    "changesRequested": "Yêu cầu thay đổi",
+    "commented": "Đã bình luận",
+    "readyForFollowup": "Sẵn sàng theo dõi",
+    "readyToMerge": "Sẵn sàng gộp",
+    "pendingPost": "Đang chờ đăng"
+  }
+}

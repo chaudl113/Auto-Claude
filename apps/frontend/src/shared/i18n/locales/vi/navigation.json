@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "project": "Dự án",
+    "tools": "Công cụ"
+  },
+  "items": {
+    "kanban": "Bảng Kanban",
+    "terminals": "Terminal Agent",
+    "insights": "Phân tích",
+    "roadmap": "Lộ trình",
+    "ideation": "Ý tưởng",
+    "changelog": "Nhật ký thay đổi",
+    "context": "Ngữ cảnh",
+    "githubIssues": "GitHub Issues",
+    "githubPRs": "GitHub PRs",
+    "gitlabIssues": "GitLab Issues",
+    "worktrees": "Worktrees"
+  },
+  "actions": {
+    "settings": "Cài đặt",
+    "help": "Trợ giúp & Phản hồi",
+    "newTask": "Tác vụ mới"
+  },
+  "tooltips": {
+    "settings": "Cài đặt ứng dụng",
+    "help": "Trợ giúp & Phản hồi"
+  },
+  "messages": {
+    "initializeToCreateTasks": "Khởi tạo Auto Claude để tạo tác vụ"
+  }
+}

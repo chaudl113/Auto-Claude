@@ -1,0 +1,70 @@
+{
+  "wizard": {
+    "title": "Trình hướng dẫn cài đặt",
+    "description": "Cấu hình môi trường Auto Claude của bạn trong vài bước đơn giản",
+    "helpText": "Trình hướng dẫn này sẽ giúp bạn thiết lập môi trường chỉ trong vài bước. Bạn có thể cấu hình token OAuth Claude, thiết lập tính năng memory và tạo tác vụ đầu tiên."
+  },
+  "welcome": {
+    "title": "Chào mừng đến với Auto Claude",
+    "subtitle": "Xây dựng phần mềm tự động với AI agents",
+    "getStarted": "Bắt đầu",
+    "skip": "Bỏ qua cài đặt",
+    "features": {
+      "aiPowered": {
+        "title": "Phát triển với AI",
+        "description": "Tạo code và xây dựng tính năng sử dụng Claude Code agents"
+      },
+      "specDriven": {
+        "title": "Quy trình theo Spec",
+        "description": "Định nghĩa tác vụ với đặc tả rõ ràng và để Auto Claude xử lý việc triển khai"
+      },
+      "memory": {
+        "title": "Memory & Ngữ cảnh",
+        "description": "Memory lâu dài giữa các phiên với Graphiti"
+      },
+      "parallel": {
+        "title": "Thực thi song song",
+        "description": "Chạy nhiều agents song song để có chu kỳ phát triển nhanh hơn"
+      }
+    }
+  },
+  "oauth": {
+    "title": "Xác thực Claude",
+    "description": "Kết nối tài khoản Claude của bạn để bật các tính năng AI",
+    "keychainTitle": "Lưu trữ an toàn",
+    "keychainDescription": "Token của bạn được mã hóa sử dụng keychain của hệ thống. Bạn có thể thấy yêu cầu mật khẩu từ macOS — nhấn \"Always Allow\" để không thấy lại."
+  },
+  "memory": {
+    "title": "Memory",
+    "description": "Auto Claude Memory giúp nhớ ngữ cảnh giữa các phiên coding của bạn"
+  },
+  "completion": {
+    "title": "Bạn đã sẵn sàng!",
+    "subtitle": "Auto Claude đã sẵn sàng giúp bạn xây dựng phần mềm tuyệt vời",
+    "setupComplete": "Cài đặt hoàn tất",
+    "setupCompleteDescription": "Môi trường của bạn đã được cấu hình và sẵn sàng. Bạn có thể bắt đầu tạo tác vụ ngay hoặc khám phá ứng dụng theo tốc độ của bạn.",
+    "whatsNext": "Tiếp theo?",
+    "createTask": {
+      "title": "Tạo tác vụ",
+      "description": "Bắt đầu bằng cách tạo tác vụ đầu tiên để xem Auto Claude hoạt động.",
+      "action": "Mở trình tạo tác vụ"
+    },
+    "customizeSettings": {
+      "title": "Tùy chỉnh cài đặt",
+      "description": "Tinh chỉnh tùy chọn, cấu hình tích hợp, hoặc chạy lại trình hướng dẫn này.",
+      "action": "Mở cài đặt"
+    },
+    "exploreDocs": {
+      "title": "Khám phá tài liệu",
+      "description": "Tìm hiểu thêm về các tính năng nâng cao, best practices và xử lý sự cố."
+    },
+    "finish": "Hoàn thành & Bắt đầu xây dựng",
+    "rerunHint": "Bạn luôn có thể chạy lại trình hướng dẫn này từ Cài đặt → Ứng dụng"
+  },
+  "steps": {
+    "welcome": "Chào mừng",
+    "auth": "Xác thực",
+    "memory": "Memory",
+    "done": "Hoàn tất"
+  }
+}
