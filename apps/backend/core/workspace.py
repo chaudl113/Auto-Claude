@@ -144,6 +144,8 @@ def merge_existing_build(
     no_commit: bool = False,
     use_smart_merge: bool = True,
     base_branch: str | None = None,
+    show_preview: bool | None = None,
+    auto_rollback: bool | None = None,
 ) -> bool:
     """
     Merge an existing build into the project using intent-aware merge.
@@ -163,10 +165,27 @@ def merge_existing_build(
         no_commit: If True, merge changes but don't commit (stage only for review in IDE)
         use_smart_merge: If True, use intent-aware merge (default True)
         base_branch: The branch the task was created from (for comparison). If None, auto-detect.
+        show_preview: If True, show diff preview before merge. If None, use config default.
+        auto_rollback: If True, enable auto-rollback on failure. If None, use config default.
 
     Returns:
         True if merge succeeded
     """
+    # Import feature config and safety features
+    try:
+        from core.feature_config import FeatureConfig
+        from core.diff_preview import get_diff_preview_generator
+        from core.rollback import get_rollback_manager
+        
+        # Use config defaults if not specified
+        if show_preview is None:
+            show_preview = FeatureConfig.diff_preview_enabled()
+        if auto_rollback is None:
+            auto_rollback = FeatureConfig.rollback_enabled()
+    except ImportError:
+        show_preview = False
+        auto_rollback = False
+    
     worktree_path = get_existing_build_worktree(project_dir, spec_name)
 
     if not worktree_path:
@@ -224,6 +243,38 @@ def merge_existing_build(
     manager = WorktreeManager(project_dir, base_branch=current_branch)
     show_build_summary(manager, spec_name)
     print()
+
+    # Show diff preview if enabled
+    if show_preview:
+        try:
+            generator = get_diff_preview_generator(project_dir)
+            diff_preview = generator.generate_preview(spec_name, current_branch)
+            generator.display_preview(diff_preview)
+            print()
+            
+            # Prompt for approval
+            response = input("Proceed with merge? [y/N]: ").strip().lower()
+            if response not in ("y", "yes"):
+                print()
+                print_status("Merge cancelled by user.", "warning")
+                return False
+            print()
+        except Exception as e:
+            debug_warning("workspace", f"Diff preview failed: {e}")
+            # Continue with merge even if preview fails
+
+    # Record safe point for rollback if enabled
+    rollback_manager = None
+    safe_point = None
+    if auto_rollback:
+        try:
+            rollback_manager = get_rollback_manager(project_dir)
+            safe_point = rollback_manager.record_safe_point(
+                f"Before merge: {spec_name}"
+            )
+            debug("workspace", f"Recorded safe point: {safe_point[:8]}")
+        except Exception as e:
+            debug_warning("workspace", f"Failed to record safe point: {e}")
 
     # Try smart merge first if enabled
     if use_smart_merge:
@@ -322,6 +373,24 @@ def merge_existing_build(
     else:
         print()
         print_status("There was a conflict merging the changes.", "error")
+        
+        # Offer rollback if enabled and safe point was recorded
+        if rollback_manager and safe_point and rollback_manager.can_rollback():
+            print()
+            response = input("Rollback to safe point? [y/N]: ").strip().lower()
+            if response in ("y", "yes"):
+                try:
+                    rollback_result = rollback_manager.rollback(create_backup=True)
+                    if rollback_result.success:
+                        print()
+                        print_status(
+                            f"Rolled back to {rollback_result.current_commit[:8]}",
+                            "success"
+                        )
+                        return False
+                except Exception as e:
+                    debug_error("workspace", f"Rollback failed: {e}")
+        
         print(muted("You may need to merge manually."))
         return False
 
@@ -516,13 +585,74 @@ def _try_smart_merge_inner(
 
         # All conflicts can be auto-merged or no conflicts
         print(muted("  All changes compatible, proceeding with merge..."))
-        return {
-            "success": True,
-            "stats": {
-                "files_merged": files_to_merge,
-                "auto_resolved": auto_mergeable,
-            },
-        }
+
+        # Actually merge the files - don't just preview!
+        # Create merge request and execute merge
+        from merge.models import TaskMergeRequest
+
+        merge_request = TaskMergeRequest(
+            task_id=spec_name,
+            worktree_path=worktree_path,
+            priority=10,  # High priority
+        )
+
+        # Execute merge
+        report = orchestrator.merge_tasks([merge_request], target_branch=manager.base_branch)
+
+        # Apply merged files to project
+        if report.success:
+            applied = orchestrator.apply_to_project(report)
+            if not applied:
+                debug_error(MODULE, "Failed to apply merged files to project")
+                return {
+                    "success": False,
+                    "error": "Failed to apply merged files",
+                }
+
+            # Stage the applied files with git
+            files_staged = 0
+            for file_path in report.file_results.keys():
+                try:
+                    result = subprocess.run(
+                        ["git", "add", file_path],
+                        cwd=project_dir,
+                        capture_output=True,
+                    )
+                    if result.returncode == 0:
+                        files_staged += 1
+                        debug(MODULE, f"Staged file: {file_path}")
+                except Exception as e:
+                    debug_warning(MODULE, f"Failed to stage {file_path}: {e}")
+
+            debug_success(
+                MODULE,
+                "Merge applied successfully",
+                files_applied=len(report.file_results),
+                files_staged=files_staged,
+            )
+
+            return {
+                "success": True,
+                "stats": {
+                    "files_merged": len(report.file_results),
+                    "auto_resolved": report.stats.conflicts_auto_resolved,
+                    "ai_assisted": report.stats.ai_calls_made > 0,
+                    "conflicts_resolved": report.stats.conflicts_auto_resolved,
+                },
+                "resolved_files": list(report.file_results.keys()),
+            }
+        else:
+            debug_error(
+                MODULE,
+                "Merge failed",
+                error=report.error,
+                files_failed=report.stats.files_failed,
+            )
+            return {
+                "success": False,
+                "error": report.error or "Merge failed",
+                "conflicts": [],
+            }
 
     except Exception as e:
         # If smart merge fails, fall back to git
