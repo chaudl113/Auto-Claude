@@ -29,6 +29,8 @@ import { registerInsightsHandlers } from './insights-handlers';
 import { registerMemoryHandlers } from './memory-handlers';
 import { registerAppUpdateHandlers } from './app-update-handlers';
 import { registerCliProxyHandlers } from './cliproxy-handlers';
+import { registerSpecTemplateHandlers } from './spec-template-handlers';
+import { registerTokenStatsHandlers } from './token-stats-handlers';
 import { notificationService } from '../notification-service';
 
 /**
@@ -102,6 +104,12 @@ export function setupIpcHandlers(
   // CLIProxyAPI handlers
   registerCliProxyHandlers();
 
+  // Spec template handlers
+  registerSpecTemplateHandlers();
+
+  // Token stats handlers
+  registerTokenStatsHandlers();
+
   console.warn('[IPC] All handler modules registered successfully');
 }
 
@@ -124,5 +132,7 @@ export {
   registerInsightsHandlers,
   registerMemoryHandlers,
   registerAppUpdateHandlers,
-  registerCliProxyHandlers
+  registerCliProxyHandlers,
+  registerSpecTemplateHandlers,
+  registerTokenStatsHandlers
 };

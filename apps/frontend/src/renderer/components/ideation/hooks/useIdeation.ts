@@ -15,7 +15,6 @@ import {
   setupIdeationListeners
 } from '../../../stores/ideation-store';
 import { loadTasks } from '../../../stores/task-store';
-import { useClaudeTokenCheck } from '../../EnvConfigModal';
 import type { Idea, IdeationType } from '../../../../shared/types';
 import { ALL_IDEATION_TYPES } from '../constants';
 
@@ -42,12 +41,8 @@ export function useIdeation(projectId: string, options: UseIdeationOptions = {})
   const [showConfigDialog, setShowConfigDialog] = useState(false);
   const [showDismissed, setShowDismissed] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
-  const [showEnvConfigModal, setShowEnvConfigModal] = useState(false);
-  const [pendingAction, setPendingAction] = useState<'generate' | 'refresh' | 'append' | null>(null);
   const [showAddMoreDialog, setShowAddMoreDialog] = useState(false);
   const [typesToAdd, setTypesToAdd] = useState<IdeationType[]>([]);
-
-  const { hasToken, isLoading: isCheckingToken, checkToken } = useClaudeTokenCheck();
 
   // Set up IPC listeners and load ideation on mount
   useEffect(() => {
@@ -57,20 +52,10 @@ export function useIdeation(projectId: string, options: UseIdeationOptions = {})
   }, [projectId]);
 
   const handleGenerate = async () => {
-    if (hasToken === false) {
-      setPendingAction('generate');
-      setShowEnvConfigModal(true);
-      return;
-    }
     generateIdeation(projectId);
   };
 
   const handleRefresh = async () => {
-    if (hasToken === false) {
-      setPendingAction('refresh');
-      setShowEnvConfigModal(true);
-      return;
-    }
     refreshIdeation(projectId);
   };
 
@@ -82,19 +67,6 @@ export function useIdeation(projectId: string, options: UseIdeationOptions = {})
     await dismissAllIdeasForProject(projectId);
   };
 
-  const handleEnvConfigured = () => {
-    checkToken();
-    if (pendingAction === 'generate') {
-      generateIdeation(projectId);
-    } else if (pendingAction === 'refresh') {
-      refreshIdeation(projectId);
-    } else if (pendingAction === 'append' && typesToAdd.length > 0) {
-      appendIdeation(projectId, typesToAdd);
-      setTypesToAdd([]);
-    }
-    setPendingAction(null);
-  };
-
   const getAvailableTypesToAdd = (): IdeationType[] => {
     if (!session) return ALL_IDEATION_TYPES;
     const existingTypes = new Set(session.ideas.map((idea) => idea.type));
@@ -103,12 +75,6 @@ export function useIdeation(projectId: string, options: UseIdeationOptions = {})
 
   const handleAddMoreIdeas = () => {
     if (typesToAdd.length === 0) return;
-
-    if (hasToken === false) {
-      setPendingAction('append');
-      setShowEnvConfigModal(true);
-      return;
-    }
 
     appendIdeation(projectId, typesToAdd);
     setTypesToAdd([]);
@@ -206,11 +172,8 @@ export function useIdeation(projectId: string, options: UseIdeationOptions = {})
     showConfigDialog,
     showDismissed,
     showArchived,
-    showEnvConfigModal,
     showAddMoreDialog,
     typesToAdd,
-    hasToken,
-    isCheckingToken,
     summary,
     activeIdeas,
     archivedIdeas,
@@ -222,7 +185,6 @@ export function useIdeation(projectId: string, options: UseIdeationOptions = {})
     setShowConfigDialog,
     setShowDismissed,
     setShowArchived,
-    setShowEnvConfigModal,
     setShowAddMoreDialog,
     setTypesToAdd,
     setConfig,
@@ -232,7 +194,6 @@ export function useIdeation(projectId: string, options: UseIdeationOptions = {})
     handleDismissAll,
     handleDeleteSelected,
     handleSelectAll,
-    handleEnvConfigured,
     getAvailableTypesToAdd,
     handleAddMoreIdeas,
     toggleTypeToAdd,

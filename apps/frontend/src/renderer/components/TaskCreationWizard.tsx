@@ -29,6 +29,7 @@ import {
 } from './ImageUpload';
 import { TaskFileExplorerDrawer } from './TaskFileExplorerDrawer';
 import { AgentProfileSelector } from './AgentProfileSelector';
+import { SpecTemplateSelector, type SpecTemplate } from './SpecTemplateSelector';
 import { FileAutocomplete } from './FileAutocomplete';
 import { createTask, saveDraft, loadDraft, clearDraft, isDraftEmpty } from '../stores/task-store';
 import { useProjectStore } from '../stores/project-store';
@@ -116,6 +117,11 @@ export function TaskCreationWizard({
   // Review setting
   const [requireReviewBeforeCoding, setRequireReviewBeforeCoding] = useState(false);
 
+  // Spec template state
+  const [selectedTemplateId, setSelectedTemplateId] = useState('');
+  const [templates, setTemplates] = useState<SpecTemplate[]>([]);
+  const [isLoadingTemplates, setIsLoadingTemplates] = useState(false);
+
   // Draft state
   const [isDraftRestored, setIsDraftRestored] = useState(false);
   const [pasteSuccess, setPasteSuccess] = useState(false);
@@ -182,6 +188,28 @@ export function TaskCreationWizard({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, projectPath]);
+
+  // Fetch spec templates when dialog opens
+  useEffect(() => {
+    if (open && settings.performanceFlags?.specTemplatesEnabled) {
+      fetchTemplates();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, settings.performanceFlags?.specTemplatesEnabled]);
+
+  const fetchTemplates = async () => {
+    setIsLoadingTemplates(true);
+    try {
+      const result = await window.electronAPI.specTemplate.list();
+      if (result.success && result.data) {
+        setTemplates(result.data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch templates:', err);
+    } finally {
+      setIsLoadingTemplates(false);
+    }
+  };
 
   const fetchBranches = async () => {
     if (!projectPath) return;
@@ -896,6 +924,19 @@ export function TaskCreationWizard({
             onPhaseThinkingChange={setPhaseThinking}
             disabled={isCreating}
           />
+
+          {/* Spec Template Selection (if enabled) */}
+          {settings.performanceFlags?.specTemplatesEnabled && (
+            <SpecTemplateSelector
+              selectedTemplateId={selectedTemplateId}
+              onTemplateChange={(templateId) => {
+                setSelectedTemplateId(templateId);
+              }}
+              templates={templates}
+              isLoading={isLoadingTemplates}
+              disabled={isCreating}
+            />
+          )}
 
           {/* Paste Success Indicator */}
           {pasteSuccess && (

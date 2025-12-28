@@ -10,6 +10,8 @@ import { AppUpdateAPI, createAppUpdateAPI } from './app-update-api';
 import { GitHubAPI, createGitHubAPI } from './modules/github-api';
 import { CLIProxyAPI, createCLIProxyAPI } from './modules/cliproxy-api';
 import { ShellAPI, createShellAPI } from './modules/shell-api';
+import { SpecTemplateAPI, createSpecTemplateAPI } from './modules/spec-template-api';
+import { TokenStatsAPI, createTokenStatsAPI } from './modules/token-stats-api';
 
 export interface ElectronAPI extends
   ProjectAPI,
@@ -22,7 +24,9 @@ export interface ElectronAPI extends
   InsightsAPI,
   AppUpdateAPI,
   CLIProxyAPI,
-  ShellAPI {
+  ShellAPI,
+  SpecTemplateAPI,
+  TokenStatsAPI {
   github: GitHubAPI;
 }
 
@@ -38,6 +42,8 @@ export const createElectronAPI = (): ElectronAPI => ({
   ...createAppUpdateAPI(),
   ...createCLIProxyAPI(),
   ...createShellAPI(),
+  ...createSpecTemplateAPI(),
+  ...createTokenStatsAPI(),
   github: createGitHubAPI()
 });
 
@@ -54,7 +60,9 @@ export {
   createAppUpdateAPI,
   createGitHubAPI,
   createCLIProxyAPI,
-  createShellAPI
+  createShellAPI,
+  createSpecTemplateAPI,
+  createTokenStatsAPI
 };
 
 export type {
@@ -69,5 +77,7 @@ export type {
   AppUpdateAPI,
   GitHubAPI,
   CLIProxyAPI,
-  ShellAPI
+  ShellAPI,
+  SpecTemplateAPI,
+  TokenStatsAPI
 };

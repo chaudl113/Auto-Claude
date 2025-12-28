@@ -36,6 +36,10 @@
     "notifications": {
       "title": "Notifications",
       "description": "Préférences d'alertes"
+    },
+    "performance": {
+      "title": "Performance",
+      "description": "Cache, pooling & exécution parallèle"
     }
   },
   "language": {
@@ -236,5 +240,55 @@
     "apiKeysInfo": "Les clés définies ici sont utilisées par défaut. Les projets individuels peuvent les remplacer dans leurs paramètres.",
     "openaiKey": "Clé API OpenAI",
     "openaiKeyDescription": "Requise pour le backend mémoire Graphiti (embeddings)"
+  },
+  "performance": {
+    "cachingPooling": {
+      "title": "Cache & Pooling",
+      "description": "Améliorez les performances avec le cache d'état d'agent et le pooling de worktree"
+    },
+    "agentCache": {
+      "title": "Cache d'état de l'agent",
+      "description": "Mettre en cache l'état de l'agent pour une récupération de session plus rapide"
+    },
+    "worktreePool": {
+      "title": "Pooling de Worktree",
+      "description": "Pré-allouer des worktrees pour une initialisation de tâche plus rapide"
+    },
+    "worktreePoolSize": {
+      "title": "Taille du Pool",
+      "description": "Nombre de worktrees à garder prêts (1-8)"
+    },
+    "mergeSafety": {
+      "title": "Sécurité de Merge",
+      "description": "Fonctionnalités de sécurité pour les opérations de merge"
+    },
+    "diffPreview": {
+      "title": "Aperçu Diff IA",
+      "description": "Afficher un aperçu diff analysé par l'IA avant les opérations de merge"
+    },
+    "rollback": {
+      "title": "Rollback Automatique",
+      "description": "Annuler automatiquement en cas d'échec du merge"
+    },
+    "parallelExecution": {
+      "title": "Exécution Parallèle",
+      "description": "Exécuter des sous-tâches indépendantes en parallèle pour des builds plus rapides"
+    },
+    "enableParallel": {
+      "title": "Activer l'Exécution Parallèle",
+      "description": "Exécuter des sous-tâches indépendantes simultanément"
+    },
+    "maxParallelTasks": {
+      "title": "Tâches Parallèles Max",
+      "description": "Nombre maximum de tâches à exécuter simultanément (1-8)"
+    },
+    "specTemplates": {
+      "title": "Templates de Spec",
+      "description": "Templates prédéfinis pour les types de spécifications courants"
+    },
+    "enableTemplates": {
+      "title": "Activer les Templates de Spec",
+      "description": "Utiliser des templates pour créer rapidement des spécifications pour les types de tâches courants"
+    }
   }
 }

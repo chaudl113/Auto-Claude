@@ -108,6 +108,62 @@ import type {
   GitHubInvestigationStatus
 } from './integrations';
 
+// Spec Template info for IPC
+export interface SpecTemplateInfo {
+  id: string;
+  name: string;
+  description: string;
+  phases: unknown[];
+  finalAcceptance: string[];
+}
+
+// Token Statistics info for IPC
+export interface TokenRequestInfo {
+  timestamp: string;
+  operation: string;
+  model: string;
+  input_tokens: number;
+  output_tokens: number;
+  cached_tokens: number;
+  cache_hit: boolean;
+  cost: number;
+  duration_ms?: number;
+  task_id?: string;
+}
+
+export interface TokenStatsInfo {
+  total_requests: number;
+  total_input_tokens: number;
+  total_output_tokens: number;
+  total_cached_tokens: number;
+  total_cost: number;
+  cache_hits: number;
+  cache_misses: number;
+  cache_hit_rate: number;
+  tokens_saved_by_cache: number;
+  cost_saved_by_cache: number;
+  avg_response_time_ms: number;
+  by_operation: Record<string, {
+    requests: number;
+    input_tokens: number;
+    output_tokens: number;
+    cached_tokens: number;
+    cost: number;
+  }>;
+  by_model: Record<string, {
+    requests: number;
+    input_tokens: number;
+    output_tokens: number;
+    cost: number;
+  }>;
+  by_hour: Record<string, {
+    requests: number;
+    tokens: number;
+    cost: number;
+  }>;
+  recent_requests: TokenRequestInfo[];
+}
+
 // Electron API exposed via contextBridge
 // Tab state interface (persisted in main process)
 export interface TabState {
@@ -603,6 +659,28 @@ export interface ElectronAPI {
   testCliProxyConnection: (url?: string, apiKey?: string) => Promise<IPCResult<{ connected: boolean; models?: string[] }>>;
   getCliProxyConfig: () => Promise<IPCResult<CLIProxyConfig>>;
   saveCliProxyConfig: (config: CLIProxyConfig) => Promise<IPCResult<void>>;
+
+  // Spec Template operations
+  specTemplate: {
+    list: () => Promise<IPCResult<SpecTemplateInfo[]>>;
+    get: (templateId: string) => Promise<IPCResult<SpecTemplateInfo>>;
+    createFrom: (templateId: string, variables?: Record<string, string>) => Promise<IPCResult<{ phases: unknown[]; finalAcceptance: string[] }>>;
+  };
+
+  // Token Statistics operations
+  tokenStats: {
+    get: (projectId?: string) => Promise<IPCResult<TokenStatsInfo>>;
+    reset: () => Promise<IPCResult<void>>;
+    record: (
+      inputTokens: number,
+      outputTokens: number,
+      model: string,
+      operation: string,
+      cachedTokens?: number,
+      durationMs?: number,
+      taskId?: string
+    ) => Promise<IPCResult<TokenRequestInfo>>;
+  };
 }
 
 declare global {

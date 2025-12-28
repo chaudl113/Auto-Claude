@@ -1,5 +1,4 @@
 import { TabsContent } from '../ui/tabs';
-import { EnvConfigModal } from '../EnvConfigModal';
 import { IDEATION_TYPE_DESCRIPTIONS } from '../../../shared/constants';
 import { IdeationEmptyState } from './IdeationEmptyState';
 import { IdeationHeader } from './IdeationHeader';
@@ -29,11 +28,8 @@ export function Ideation({ projectId, onGoToTask }: IdeationProps) {
     showConfigDialog,
     showDismissed,
     showArchived,
-    showEnvConfigModal,
     showAddMoreDialog,
     typesToAdd,
-    hasToken,
-    isCheckingToken,
     summary,
     activeIdeas,
     selectedIds,
@@ -42,7 +38,6 @@ export function Ideation({ projectId, onGoToTask }: IdeationProps) {
     setShowConfigDialog,
     setShowDismissed,
     setShowArchived,
-    setShowEnvConfigModal,
     setShowAddMoreDialog,
     setTypesToAdd,
     setConfig,
@@ -52,7 +47,6 @@ export function Ideation({ projectId, onGoToTask }: IdeationProps) {
     handleDismissAll,
     handleDeleteSelected,
     handleSelectAll,
-    handleEnvConfigured,
     getAvailableTypesToAdd,
     handleAddMoreIdeas,
     toggleTypeToAdd,
@@ -90,8 +84,6 @@ export function Ideation({ projectId, onGoToTask }: IdeationProps) {
       <>
         <IdeationEmptyState
           config={config}
-          hasToken={hasToken}
-          isCheckingToken={isCheckingToken}
           onGenerate={handleGenerate}
           onOpenConfig={() => setShowConfigDialog(true)}
           onToggleIdeationType={toggleIdeationType}
@@ -109,15 +101,6 @@ export function Ideation({ projectId, onGoToTask }: IdeationProps) {
           onCloseConfigDialog={() => setShowConfigDialog(false)}
           onCloseAddMoreDialog={() => {}}
           onConfirmAddMore={() => {}}
-        />
-
-        <EnvConfigModal
-          open={showEnvConfigModal}
-          onOpenChange={setShowEnvConfigModal}
-          onConfigured={handleEnvConfigured}
-          title="Claude Authentication Required"
-          description="A Claude Code OAuth token is required to generate AI-powered feature ideas."
-          projectId={projectId}
         />
       </>
     );
@@ -232,16 +215,6 @@ export function Ideation({ projectId, onGoToTask }: IdeationProps) {
         onCloseConfigDialog={() => setShowConfigDialog(false)}
         onCloseAddMoreDialog={() => setShowAddMoreDialog(false)}
         onConfirmAddMore={handleAddMoreIdeas}
-      />
-
-      {/* Environment Configuration Modal */}
-      <EnvConfigModal
-        open={showEnvConfigModal}
-        onOpenChange={setShowEnvConfigModal}
-        onConfigured={handleEnvConfigured}
-        title="Claude Authentication Required"
-        description="A Claude Code OAuth token is required to generate AI-powered feature ideas."
-        projectId={projectId}
       />
     </div>
   );

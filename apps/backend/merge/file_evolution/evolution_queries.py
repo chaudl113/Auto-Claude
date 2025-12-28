@@ -102,8 +102,14 @@ class EvolutionQueries:
         modifications = []
         for file_path, evolution in evolutions.items():
             snapshot = evolution.get_task_snapshot(task_id)
-            if snapshot and snapshot.semantic_changes:
-                modifications.append((file_path, snapshot))
+            if snapshot:
+                # Include file if it has semantic changes OR content hash changed
+                has_changes = (
+                    snapshot.semantic_changes or
+                    (snapshot.content_hash_before != snapshot.content_hash_after)
+                )
+                if has_changes:
+                    modifications.append((file_path, snapshot))
         return modifications
 
     def get_files_modified_by_tasks(
@@ -125,10 +131,17 @@ class EvolutionQueries:
 
         for file_path, evolution in evolutions.items():
             for snapshot in evolution.task_snapshots:
-                if snapshot.task_id in task_ids and snapshot.semantic_changes:
-                    if file_path not in file_tasks:
-                        file_tasks[file_path] = []
-                    file_tasks[file_path].append(snapshot.task_id)
+                if snapshot.task_id in task_ids:
+                    # Include all modified files, even if no semantic changes detected
+                    # (e.g., CSS changes, config changes, or simple text edits)
+                    has_changes = (
+                        snapshot.semantic_changes or
+                        (snapshot.content_hash_before != snapshot.content_hash_after)
+                    )
+                    if has_changes:
+                        if file_path not in file_tasks:
+                            file_tasks[file_path] = []
+                        file_tasks[file_path].append(snapshot.task_id)
 
         return file_tasks
 

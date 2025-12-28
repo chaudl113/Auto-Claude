@@ -242,6 +242,38 @@ Environment Variables:
         help="Base branch for creating worktrees (default: auto-detect or current branch)",
     )
 
+    # Performance feature flags
+    parser.add_argument(
+        "--enable-cache",
+        action="store_true",
+        help="Enable agent state caching for faster session recovery",
+    )
+    parser.add_argument(
+        "--disable-cache",
+        action="store_true",
+        help="Disable agent state caching",
+    )
+    parser.add_argument(
+        "--enable-pool",
+        action="store_true",
+        help="Enable worktree pooling for faster worktree allocation",
+    )
+    parser.add_argument(
+        "--preview-diff",
+        action="store_true",
+        help="Show AI diff preview before merge operations",
+    )
+    parser.add_argument(
+        "--no-rollback",
+        action="store_true",
+        help="Disable auto-rollback on merge failure",
+    )
+    parser.add_argument(
+        "--show-features",
+        action="store_true",
+        help="Show current feature flag status",
+    )
+
     # Batch task management
     parser.add_argument(
         "--batch-create",
@@ -295,6 +327,23 @@ def main() -> None:
         print(
             f"\n{icon(Icons.GEAR)} Note: --dev flag is deprecated. All specs now use .auto-claude/specs/\n"
         )
+
+    # Handle --show-features command
+    if args.show_features:
+        try:
+            from core.feature_config import FeatureConfig
+            FeatureConfig.print_status()
+        except ImportError:
+            print("Feature config not available")
+        return
+
+    # Apply feature flag overrides from CLI
+    if args.enable_cache:
+        os.environ["AGENT_CACHE_ENABLED"] = "true"
+    if args.disable_cache:
+        os.environ["AGENT_CACHE_ENABLED"] = "false"
+    if args.enable_pool:
+        os.environ["WORKTREE_POOL_ENABLED"] = "true"
 
     # Handle --list command
     if args.list:
@@ -368,6 +417,8 @@ def main() -> None:
             spec_dir.name,
             no_commit=args.no_commit,
             base_branch=args.base_branch,
+            show_preview=args.preview_diff,
+            auto_rollback=not args.no_rollback,
         )
         if not success:
             sys.exit(1)

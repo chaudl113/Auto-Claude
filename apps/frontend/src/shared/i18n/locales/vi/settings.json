@@ -36,6 +36,10 @@
     "notifications": {
       "title": "Thông báo",
       "description": "Tùy chọn cảnh báo"
+    },
+    "performance": {
+      "title": "Hiệu suất",
+      "description": "Bộ nhớ đệm, pooling & thực thi song song"
     }
   },
   "language": {
@@ -236,5 +240,55 @@
     "apiKeysInfo": "Keys đặt ở đây được sử dụng làm mặc định. Các dự án riêng có thể ghi đè trong cài đặt của chúng.",
     "openaiKey": "OpenAI API Key",
     "openaiKeyDescription": "Bắt buộc cho backend memory Graphiti (embeddings)"
+  },
+  "performance": {
+    "cachingPooling": {
+      "title": "Bộ nhớ đệm & Pooling",
+      "description": "Cải thiện hiệu suất với bộ nhớ đệm trạng thái agent và worktree pooling"
+    },
+    "agentCache": {
+      "title": "Bộ nhớ đệm trạng thái Agent",
+      "description": "Lưu trạng thái agent để phục hồi phiên nhanh hơn sau khi bị gián đoạn"
+    },
+    "worktreePool": {
+      "title": "Worktree Pooling",
+      "description": "Cấp phát trước worktree để khởi tạo tác vụ nhanh hơn"
+    },
+    "worktreePoolSize": {
+      "title": "Kích thước Pool",
+      "description": "Số lượng worktree giữ sẵn (1-8)"
+    },
+    "mergeSafety": {
+      "title": "An toàn Merge",
+      "description": "Tính năng an toàn cho các thao tác merge"
+    },
+    "diffPreview": {
+      "title": "Xem trước Diff bằng AI",
+      "description": "Hiển thị xem trước diff được AI phân tích trước khi merge"
+    },
+    "rollback": {
+      "title": "Tự động Rollback",
+      "description": "Tự động rollback khi merge thất bại"
+    },
+    "parallelExecution": {
+      "title": "Thực thi Song song",
+      "description": "Chạy các tác vụ con độc lập song song để build nhanh hơn"
+    },
+    "enableParallel": {
+      "title": "Bật Thực thi Song song",
+      "description": "Chạy các tác vụ con độc lập đồng thời"
+    },
+    "maxParallelTasks": {
+      "title": "Số tác vụ song song tối đa",
+      "description": "Số lượng tác vụ tối đa chạy đồng thời (1-8)"
+    },
+    "specTemplates": {
+      "title": "Template Spec",
+      "description": "Template có sẵn cho các loại đặc tả phổ biến"
+    },
+    "enableTemplates": {
+      "title": "Bật Template Spec",
+      "description": "Sử dụng template để tạo đặc tả nhanh cho các loại tác vụ phổ biến"
+    }
   }
 }

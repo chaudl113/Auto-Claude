@@ -24,7 +24,7 @@ import time
 from datetime import datetime
 from functools import wraps
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 
 # ANSI color codes for terminal output
@@ -59,7 +59,7 @@ def _get_debug_level() -> int:
         return 1
 
 
-def _get_log_file() -> Path | None:
+def _get_log_file() -> Optional[Path]:
     """Get optional log file path."""
     log_file = os.environ.get("DEBUG_LOG_FILE")
     if log_file:

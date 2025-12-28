@@ -6,6 +6,9 @@
   "items": {
     "kanban": "Bảng Kanban",
     "terminals": "Terminal Agent",
+    "dashboard": "Bảng tiến độ",
+    "tokenStats": "Thống kê Token",
+    "dependencyGraph": "Đồ thị phụ thuộc",
     "insights": "Phân tích",
     "roadmap": "Lộ trình",
     "ideation": "Ý tưởng",

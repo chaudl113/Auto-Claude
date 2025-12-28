@@ -36,6 +36,10 @@
     "notifications": {
       "title": "Notifications",
       "description": "Alert preferences"
+    },
+    "performance": {
+      "title": "Performance",
+      "description": "Caching, pooling & parallel execution"
     }
   },
   "language": {
@@ -236,5 +240,55 @@
     "apiKeysInfo": "Keys set here are used as defaults. Individual projects can override these in their settings.",
     "openaiKey": "OpenAI API Key",
     "openaiKeyDescription": "Required for Graphiti memory backend (embeddings)"
+  },
+  "performance": {
+    "cachingPooling": {
+      "title": "Caching & Pooling",
+      "description": "Improve performance with agent state caching and worktree pooling"
+    },
+    "agentCache": {
+      "title": "Agent State Caching",
+      "description": "Cache agent state for faster session recovery after interruptions"
+    },
+    "worktreePool": {
+      "title": "Worktree Pooling",
+      "description": "Pre-allocate worktrees for faster task initialization"
+    },
+    "worktreePoolSize": {
+      "title": "Pool Size",
+      "description": "Number of worktrees to keep ready (1-8)"
+    },
+    "mergeSafety": {
+      "title": "Merge Safety",
+      "description": "Safety features for merge operations"
+    },
+    "diffPreview": {
+      "title": "AI Diff Preview",
+      "description": "Show AI-analyzed diff preview before merge operations"
+    },
+    "rollback": {
+      "title": "Auto Rollback",
+      "description": "Automatically rollback on merge failure"
+    },
+    "parallelExecution": {
+      "title": "Parallel Execution",
+      "description": "Run independent subtasks in parallel for faster builds"
+    },
+    "enableParallel": {
+      "title": "Enable Parallel Execution",
+      "description": "Run independent subtasks concurrently"
+    },
+    "maxParallelTasks": {
+      "title": "Max Parallel Tasks",
+      "description": "Maximum number of tasks to run simultaneously (1-8)"
+    },
+    "specTemplates": {
+      "title": "Spec Templates",
+      "description": "Pre-built templates for common specification types"
+    },
+    "enableTemplates": {
+      "title": "Enable Spec Templates",
+      "description": "Use templates to quickly create specifications for common task types"
+    }
   }
 }

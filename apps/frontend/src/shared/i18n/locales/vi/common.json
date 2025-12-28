@@ -98,5 +98,73 @@
     "readyForFollowup": "Sẵn sàng theo dõi",
     "readyToMerge": "Sẵn sàng gộp",
     "pendingPost": "Đang chờ đăng"
+  },
+  "specTemplate": {
+    "title": "Mẫu Spec",
+    "loading": "Đang tải mẫu...",
+    "noTemplate": "Không dùng mẫu (bắt đầu từ đầu)",
+    "showDetails": "Xem chi tiết",
+    "hideDetails": "Ẩn chi tiết",
+    "phases": "giai đoạn",
+    "phasesTitle": "Các giai đoạn",
+    "acceptanceCriteria": "Tiêu chí chấp nhận"
+  },
+  "tokenStats": {
+    "title": "Thống kê Token",
+    "requests": "Yêu cầu",
+    "tokens": "Token",
+    "cacheRate": "Cache",
+    "cost": "Chi phí",
+    "totalTokens": "Tổng Token",
+    "cacheHitRate": "Tỷ lệ Cache",
+    "tokensSaved": "token đã tiết kiệm",
+    "totalCost": "Tổng Chi phí",
+    "savedByCache": "tiết kiệm từ cache",
+    "avgResponseTime": "Thời gian phản hồi TB",
+    "usageTrend": "Xu hướng sử dụng (24h)",
+    "cacheDistribution": "Phân bố Cache",
+    "costByOperation": "Chi phí theo Thao tác",
+    "modelUsage": "Sử dụng Model",
+    "recentRequests": "Yêu cầu gần đây"
+  },
+  "dependencyGraph": {
+    "title": "Đồ thị phụ thuộc tác vụ",
+    "description": "Trực quan hóa mối quan hệ và phụ thuộc giữa các tác vụ",
+    "filters": {
+      "all": "Tất cả tác vụ",
+      "inProgress": "Đang thực hiện",
+      "pending": "Đang chờ",
+      "blocked": "Bị chặn"
+    },
+    "viewModes": {
+      "dependencies": "Phụ thuộc",
+      "timeline": "Dòng thời gian",
+      "category": "Theo danh mục"
+    },
+    "stats": {
+      "title": "Thống kê",
+      "completed": "Hoàn thành",
+      "inProgress": "Đang thực hiện",
+      "pending": "Đang chờ",
+      "blocked": "Bị chặn"
+    },
+    "legend": {
+      "title": "Chú giải",
+      "description": "Trạng thái tác vụ và mối quan hệ",
+      "completed": "Hoàn thành",
+      "inProgress": "Đang thực hiện",
+      "review": "Đánh giá",
+      "pending": "Đang chờ",
+      "completedDependency": "Phụ thuộc hoàn thành",
+      "activeDependency": "Phụ thuộc đang hoạt động",
+      "blockingRelationship": "Mối quan hệ chặn"
+    },
+    "taskNode": {
+      "blockedBy": "Bị chặn bởi {{count}} tác vụ",
+      "blockedBy_plural": "Bị chặn bởi {{count}} tác vụ",
+      "blockingOthers": "Đang chặn các tác vụ khác",
+      "uncategorized": "Chưa phân loại",
+      "normal": "Bình thường"
+    }
   }
 }

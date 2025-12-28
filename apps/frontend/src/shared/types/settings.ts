@@ -78,6 +78,26 @@ export interface AgentProfile {
   phaseThinking?: PhaseThinkingConfig;
 }
 
+// Performance feature flags configuration
+export interface PerformanceFeatureFlags {
+  // Agent state caching for faster session recovery
+  agentCacheEnabled: boolean;
+  // Worktree pooling for faster worktree allocation
+  worktreePoolEnabled: boolean;
+  // Number of worktrees to keep in pool (1-8)
+  worktreePoolSize: number;
+  // AI diff preview before merge operations
+  diffPreviewEnabled: boolean;
+  // Automatic rollback on merge failure
+  rollbackEnabled: boolean;
+  // Parallel execution of independent subtasks
+  parallelExecutionEnabled: boolean;
+  // Maximum parallel tasks (1-8)
+  maxParallelTasks: number;
+  // Spec template system
+  specTemplatesEnabled: boolean;
+}
+
 export interface AppSettings {
   theme: 'light' | 'dark' | 'system';
   colorTheme?: ColorTheme;
@@ -120,6 +140,8 @@ export interface AppSettings {
   _migratedAgentProfileToAuto?: boolean;
   // Language preference for UI (i18n)
   language?: SupportedLanguage;
+  // Performance feature flags
+  performanceFlags?: PerformanceFeatureFlags;
 }
 
 // Auto-Claude Source Environment Configuration (for auto-claude repo .env)

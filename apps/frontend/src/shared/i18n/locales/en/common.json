@@ -98,5 +98,73 @@
     "readyForFollowup": "Ready for Follow-up",
     "readyToMerge": "Ready to Merge",
     "pendingPost": "Pending Post"
+  },
+  "specTemplate": {
+    "title": "Spec Template",
+    "loading": "Loading templates...",
+    "noTemplate": "No template (start from scratch)",
+    "showDetails": "Show details",
+    "hideDetails": "Hide details",
+    "phases": "phases",
+    "phasesTitle": "Phases",
+    "acceptanceCriteria": "Acceptance Criteria"
+  },
+  "tokenStats": {
+    "title": "Token Usage Statistics",
+    "requests": "Requests",
+    "tokens": "Tokens",
+    "cacheRate": "Cache",
+    "cost": "Cost",
+    "totalTokens": "Total Tokens",
+    "cacheHitRate": "Cache Hit Rate",
+    "tokensSaved": "tokens saved",
+    "totalCost": "Total Cost",
+    "savedByCache": "saved by cache",
+    "avgResponseTime": "Avg Response Time",
+    "usageTrend": "Usage Trend (24h)",
+    "cacheDistribution": "Cache Distribution",
+    "costByOperation": "Cost by Operation",
+    "modelUsage": "Model Usage",
+    "recentRequests": "Recent Requests"
+  },
+  "dependencyGraph": {
+    "title": "Task Dependency Graph",
+    "description": "Visualize task relationships and dependencies",
+    "filters": {
+      "all": "All Tasks",
+      "inProgress": "In Progress",
+      "pending": "Pending",
+      "blocked": "Blocked"
+    },
+    "viewModes": {
+      "dependencies": "Dependencies",
+      "timeline": "Timeline",
+      "category": "By Category"
+    },
+    "stats": {
+      "title": "Statistics",
+      "completed": "Completed",
+      "inProgress": "In Progress",
+      "pending": "Pending",
+      "blocked": "Blocked"
+    },
+    "legend": {
+      "title": "Legend",
+      "description": "Task status and relationships",
+      "completed": "Completed",
+      "inProgress": "In Progress",
+      "review": "Review",
+      "pending": "Pending",
+      "completedDependency": "Completed Dependency",
+      "activeDependency": "Active Dependency",
+      "blockingRelationship": "Blocking Relationship"
+    },
+    "taskNode": {
+      "blockedBy": "Blocked by {{count}} task",
+      "blockedBy_plural": "Blocked by {{count}} tasks",
+      "blockingOthers": "Blocking other tasks",
+      "uncategorized": "Uncategorized",
+      "normal": "Normal"
+    }
   }
 }

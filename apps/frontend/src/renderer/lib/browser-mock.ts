@@ -194,7 +194,70 @@ const browserMockAPI: ElectronAPI = {
       ]
     }
   }),
-  saveCliProxyConfig: async () => ({ success: true })
+  saveCliProxyConfig: async () => ({ success: true }),
+
+  // Spec Template
+  specTemplate: {
+    list: async () => ({
+      success: true,
+      data: [
+        { id: 'auth-crud', name: 'Authentication + CRUD', description: 'User authentication with full CRUD operations', phases: [], finalAcceptance: [] },
+        { id: 'api-endpoint', name: 'REST API Endpoint', description: 'Single REST API endpoint with validation', phases: [], finalAcceptance: [] }
+      ]
+    }),
+    get: async () => ({
+      success: true,
+      data: { id: 'auth-crud', name: 'Authentication + CRUD', description: 'User authentication with full CRUD operations', phases: [], finalAcceptance: [] }
+    }),
+    createFrom: async () => ({
+      success: true,
+      data: { phases: [], finalAcceptance: [] }
+    })
+  },
+
+  // Token Statistics
+  tokenStats: {
+    get: async () => ({
+      success: true,
+      data: {
+        total_requests: 42,
+        total_input_tokens: 125000,
+        total_output_tokens: 45000,
+        total_cached_tokens: 30000,
+        total_cost: 0.85,
+        cache_hits: 15,
+        cache_misses: 27,
+        cache_hit_rate: 35.7,
+        tokens_saved_by_cache: 30000,
+        cost_saved_by_cache: 0.08,
+        avg_response_time_ms: 1250,
+        by_operation: {
+          'spec_generation': { requests: 10, input_tokens: 50000, output_tokens: 20000, cached_tokens: 10000, cost: 0.30 },
+          'code_implementation': { requests: 20, input_tokens: 60000, output_tokens: 20000, cached_tokens: 15000, cost: 0.40 }
+        },
+        by_model: {
+          'claude-sonnet-4-20250514': { requests: 35, input_tokens: 100000, output_tokens: 40000, cost: 0.75 },
+          'claude-haiku-3-5-20241022': { requests: 7, input_tokens: 25000, output_tokens: 5000, cost: 0.10 }
+        },
+        by_hour: {},
+        recent_requests: []
+      }
+    }),
+    reset: async () => ({ success: true }),
+    record: async () => ({
+      success: true,
+      data: {
+        timestamp: new Date().toISOString(),
+        operation: 'test',
+        model: 'claude-sonnet-4-20250514',
+        input_tokens: 1000,
+        output_tokens: 500,
+        cached_tokens: 0,
+        cache_hit: false,
+        cost: 0.01
+      }
+    })
+  }
 };
 
 /**

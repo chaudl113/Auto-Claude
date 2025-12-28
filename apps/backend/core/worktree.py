@@ -14,6 +14,8 @@ This allows:
 4. Clear 1:1:1 mapping: spec → worktree → branch
 """
 
+from __future__ import annotations
+
 import asyncio
 import os
 import re
@@ -21,6 +23,10 @@ import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from core.worktree_pool import WorktreePool, PooledWorktree
 
 
 class WorktreeError(Exception):
@@ -42,6 +48,7 @@ class WorktreeInfo:
     files_changed: int = 0
     additions: int = 0
     deletions: int = 0
+    is_pooled: bool = False  # Whether this worktree came from the pool
 
 
 class WorktreeManager:
@@ -50,6 +57,8 @@ class WorktreeManager:
 
     Each spec gets its own worktree in .worktrees/{spec-name}/ with
     a corresponding branch auto-claude/{spec-name}.
+    
+    Supports optional worktree pooling for faster allocation.
     """
 
     def __init__(self, project_dir: Path, base_branch: str | None = None):
@@ -57,6 +66,44 @@ class WorktreeManager:
         self.base_branch = base_branch or self._detect_base_branch()
         self.worktrees_dir = project_dir / ".worktrees"
         self._merge_lock = asyncio.Lock()
+        
+        # Initialize worktree pool if enabled
+        self._pool: WorktreePool | None = None
+        self._pool_initialized = False
+        self._init_pool()
+    
+    def _init_pool(self) -> None:
+        """Initialize worktree pool if enabled."""
+        try:
+            from core.feature_config import FeatureConfig
+            from core.worktree_pool import get_worktree_pool
+            
+            if FeatureConfig.worktree_pool_enabled():
+                self._pool = get_worktree_pool(
+                    self.project_dir,
+                    pool_size=FeatureConfig.worktree_pool_size()
+                )
+        except ImportError:
+            # Feature config or pool not available
+            pass
+        except Exception:
+            # Silently fail - pool is optional enhancement
+            pass
+    
+    async def initialize_pool(self) -> None:
+        """Pre-populate worktree pool for faster allocation."""
+        if self._pool and not self._pool_initialized:
+            try:
+                await self._pool.initialize_pool()
+                self._pool_initialized = True
+            except Exception as e:
+                print(f"Warning: Could not initialize worktree pool: {e}")
+    
+    async def get_pool_stats(self) -> dict | None:
+        """Get worktree pool statistics."""
+        if self._pool:
+            return self._pool.get_pool_stats()
+        return None
 
     def _detect_base_branch(self) -> str:
         """
@@ -345,7 +392,63 @@ class WorktreeManager:
             spec_name=spec_name,
             base_branch=self.base_branch,
             is_active=True,
+            is_pooled=False,
         )
+
+    async def create_worktree_async(self, spec_name: str) -> WorktreeInfo:
+        """
+        Create a worktree asynchronously, using pool if available.
+
+        Args:
+            spec_name: The spec folder name (e.g., "002-implement-memory")
+
+        Returns:
+            WorktreeInfo for the created/allocated worktree
+        """
+        # Try to allocate from pool first
+        if self._pool:
+            try:
+                pooled = await self._pool.allocate(spec_name)
+                if pooled:
+                    print(f"Allocated worktree from pool: {pooled.path.name}")
+                    return WorktreeInfo(
+                        path=pooled.path,
+                        branch=pooled.branch,
+                        spec_name=spec_name,
+                        base_branch=self.base_branch,
+                        is_active=True,
+                        is_pooled=True,
+                    )
+            except Exception as e:
+                print(f"Pool allocation failed, falling back to creation: {e}")
+        
+        # Fallback to synchronous creation
+        return self.create_worktree(spec_name)
+
+    async def release_worktree_async(
+        self, spec_name: str, clean: bool = True
+    ) -> None:
+        """
+        Release a worktree back to the pool or delete it.
+
+        Args:
+            spec_name: The spec folder name
+            clean: Whether to clean the worktree before returning to pool
+        """
+        worktree_path = self.get_worktree_path(spec_name)
+        
+        if self._pool:
+            try:
+                # Try to release back to pool
+                released = await self._pool.release_by_path(worktree_path, clean=clean)
+                if released:
+                    print(f"Released worktree back to pool: {worktree_path.name}")
+                    return
+            except Exception:
+                pass
+        
+        # Fallback to removal
+        self.remove_worktree(spec_name, delete_branch=True)
 
     def get_or_create_worktree(self, spec_name: str) -> WorktreeInfo:
         """

@@ -87,9 +87,16 @@ class ModificationTracker:
 
         # Get or create evolution
         if rel_path not in evolutions:
-            logger.warning(f"File {rel_path} not being tracked")
-            # Note: We could auto-create here, but for now return None
-            return None
+            # Auto-create evolution for new/changed files even if not in baseline
+            logger.info(f"Auto-tracking new/changed file: {rel_path}")
+            evolution = FileEvolution(
+                file_path=rel_path,
+                baseline_commit="unknown",
+                baseline_captured_at=datetime.now(),
+                baseline_content_hash=compute_content_hash(old_content),
+                baseline_snapshot_path=None,  # No baseline for ad-hoc files
+            )
+            evolutions[rel_path] = evolution
 
         evolution = evolutions.get(rel_path)
         if not evolution:

@@ -10,6 +10,8 @@ context window usage. For example, Electron tools are only included for
 Electron projects, not for Next.js or CLI projects.
 """
 
+from typing import Optional
+
 from .models import (
     BASE_READ_TOOLS,
     BASE_WRITE_TOOLS,
@@ -27,8 +29,8 @@ from .models import (
 
 def get_allowed_tools(
     agent_type: str,
-    project_capabilities: dict | None = None,
-) -> list[str]:
+    project_capabilities: Optional[dict] = None,
+) -> list:
     """
     Get the list of allowed tools for a specific agent type.
 
@@ -108,7 +110,7 @@ def get_allowed_tools(
     return tools
 
 
-def _get_qa_mcp_tools(project_capabilities: dict | None) -> list[str]:
+def _get_qa_mcp_tools(project_capabilities: Optional[dict]) -> list:
     """
     Get the list of MCP tools for QA agents based on project capabilities.
 

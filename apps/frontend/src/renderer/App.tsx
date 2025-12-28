@@ -44,6 +44,9 @@ import { GitHubIssues } from './components/GitHubIssues';
 import { GitHubPRs } from './components/github-prs';
 import { Changelog } from './components/Changelog';
 import { Worktrees } from './components/Worktrees';
+import { ProgressDashboard } from './components/ProgressDashboard';
+import { TaskDependencyGraph } from './components/TaskDependencyGraph';
+import { TokenStatsDashboard } from './components/TokenStatsDashboard';
 import { WelcomeScreen } from './components/WelcomeScreen';
 import { RateLimitModal } from './components/RateLimitModal';
 import { SDKRateLimitModal } from './components/SDKRateLimitModal';
@@ -652,6 +655,15 @@ export function App() {
                     isActive={activeView === 'terminals'}
                   />
                 </div>
+                {activeView === 'dashboard' && (activeProjectId || selectedProjectId) && (
+                  <ProgressDashboard projectId={activeProjectId || selectedProjectId!} />
+                )}
+                {activeView === 'token-stats' && (activeProjectId || selectedProjectId) && (
+                  <TokenStatsDashboard projectId={activeProjectId || selectedProjectId!} />
+                )}
+                {activeView === 'dependency-graph' && (activeProjectId || selectedProjectId) && (
+                  <TaskDependencyGraph projectId={activeProjectId || selectedProjectId!} />
+                )}
                 {activeView === 'roadmap' && (activeProjectId || selectedProjectId) && (
                   <Roadmap projectId={activeProjectId || selectedProjectId!} onGoToTask={handleGoToTask} />
                 )}

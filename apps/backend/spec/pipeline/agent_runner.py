@@ -6,13 +6,16 @@ Handles the execution of AI agents for the spec creation pipeline.
 """
 
 from pathlib import Path
+from typing import Any
 
 # Configure safe encoding before any output (fixes Windows encoding errors)
 from ui.capabilities import configure_safe_encoding
 
 configure_safe_encoding()
 
+from core.agent_cache import get_agent_cache
 from core.client import create_client
+from core.feature_config import FeatureConfig
 from debug import debug, debug_detailed, debug_error, debug_section, debug_success
 from task_logger import (
     LogEntryType,
@@ -43,6 +46,20 @@ class AgentRunner:
         self.spec_dir = spec_dir
         self.model = model
         self.task_logger = task_logger
+        self.session_id = f"agent-{spec_dir.name}"
+        
+        # Initialize agent cache if enabled
+        self._cache = None
+        if FeatureConfig.agent_cache_enabled():
+            try:
+                self._cache = get_agent_cache(spec_dir)
+                debug("agent_runner", "Agent cache initialized", spec_dir=str(spec_dir))
+            except Exception as e:
+                debug_error("agent_runner", f"Failed to initialize cache: {e}")
+        
+        # Track messages for caching
+        self._messages: list[dict[str, Any]] = []
+        self._current_phase = "planning"
 
     async def run_agent(
         self,
@@ -108,6 +125,19 @@ class AgentRunner:
                 "Added additional context",
                 context_length=len(additional_context),
             )
+
+        # Check for cached state and add resume context
+        if self._cache:
+            cached_state = self._cache.load_state()
+            if cached_state:
+                resume_prompt = self._cache.get_resume_prompt()
+                if resume_prompt:
+                    prompt = f"{resume_prompt}\n\n---\n\n{prompt}"
+                    debug(
+                        "agent_runner",
+                        "Added resume context from cache",
+                        cached_messages=len(cached_state.get("messages", [])),
+                    )
 
         # Create client with thinking budget
         debug(
@@ -224,6 +254,12 @@ class AgentRunner:
                     tool_count=tool_count,
                     response_length=len(response_text),
                 )
+                
+                # Invalidate cache on successful completion
+                if self._cache:
+                    self._cache.invalidate()
+                    debug("agent_runner", "Cache invalidated after successful completion")
+                
                 return True, response_text
 
         except Exception as e:
@@ -232,6 +268,24 @@ class AgentRunner:
                 f"Agent session error: {e}",
                 exception_type=type(e).__name__,
             )
+            
+            # Save state to cache for recovery on failure
+            if self._cache and self._messages:
+                try:
+                    self._cache.save_state(
+                        session_id=self.session_id,
+                        messages=self._messages,
+                        context={
+                            "phase": self._current_phase,
+                            "prompt_file": prompt_file,
+                            "error": str(e),
+                        },
+                        file_state={},
+                    )
+                    debug("agent_runner", "Saved state to cache for recovery")
+                except Exception as cache_err:
+                    debug_error("agent_runner", f"Failed to save cache: {cache_err}")
+            
             if self.task_logger:
                 self.task_logger.log_error(f"Agent error: {e}", LogPhase.PLANNING)
             return False, str(e)

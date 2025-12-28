@@ -6,6 +6,9 @@
   "items": {
     "kanban": "Kanban Board",
     "terminals": "Agent Terminals",
+    "dashboard": "Progress Dashboard",
+    "tokenStats": "Token Statistics",
+    "dependencyGraph": "Dependency Graph",
     "insights": "Insights",
     "roadmap": "Roadmap",
     "ideation": "Ideation",

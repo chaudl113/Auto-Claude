@@ -1,4 +1,4 @@
-import { Lightbulb, Settings2, AlertCircle, Sparkles } from 'lucide-react';
+import { Lightbulb, Settings2, Sparkles } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Switch } from '../ui/switch';
@@ -11,8 +11,6 @@ import { ALL_IDEATION_TYPES } from './constants';
 
 interface IdeationEmptyStateProps {
   config: IdeationConfig;
-  hasToken: boolean | null;
-  isCheckingToken: boolean;
   onGenerate: () => void;
   onOpenConfig: () => void;
   onToggleIdeationType: (type: IdeationType) => void;
@@ -20,8 +18,6 @@ interface IdeationEmptyStateProps {
 
 export function IdeationEmptyState({
   config,
-  hasToken,
-  isCheckingToken,
   onGenerate,
   onOpenConfig,
   onToggleIdeationType
@@ -67,18 +63,10 @@ export function IdeationEmptyState({
           </div>
         </div>
 
-        <Button onClick={onGenerate} size="lg" disabled={isCheckingToken}>
+        <Button onClick={onGenerate} size="lg">
           <Sparkles className="h-4 w-4 mr-2" />
           Generate Ideas
         </Button>
-
-        {/* Show warning if token is missing */}
-        {hasToken === false && !isCheckingToken && (
-          <p className="mt-3 text-sm text-muted-foreground">
-            <AlertCircle className="h-4 w-4 inline-block mr-1 text-warning" />
-            Claude token not configured. You'll be prompted to enter it when generating.
-          </p>
-        )}
       </Card>
     </div>
   );

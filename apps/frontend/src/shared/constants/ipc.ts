@@ -367,5 +367,15 @@ export const IPC_CHANNELS = {
   RELEASE_GET_VERSIONS: 'release:getVersions',
 
   // Release events (main -> renderer)
-  RELEASE_PROGRESS: 'release:progress'
+  RELEASE_PROGRESS: 'release:progress',
+
+  // Spec Template operations
+  SPEC_TEMPLATE_LIST: 'specTemplate:list',
+  SPEC_TEMPLATE_GET: 'specTemplate:get',
+  SPEC_TEMPLATE_CREATE_FROM: 'specTemplate:createFrom',
+
+  // Token Statistics operations
+  TOKEN_STATS_GET: 'tokenStats:get',
+  TOKEN_STATS_RESET: 'tokenStats:reset',
+  TOKEN_STATS_RECORD: 'tokenStats:record'
 } as const;

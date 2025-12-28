@@ -13,6 +13,21 @@ export const UI_SCALE_DEFAULT = 100;
 export const UI_SCALE_STEP = 5;
 
 // ============================================
+// Default Performance Feature Flags
+// ============================================
+
+export const DEFAULT_PERFORMANCE_FLAGS = {
+  agentCacheEnabled: true,
+  worktreePoolEnabled: true,
+  worktreePoolSize: 3,
+  diffPreviewEnabled: true,
+  rollbackEnabled: true,
+  parallelExecutionEnabled: true,
+  maxParallelTasks: 3,
+  specTemplatesEnabled: true
+};
+
+// ============================================
 // Default App Settings
 // ============================================
 
